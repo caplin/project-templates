@@ -19,7 +19,7 @@ public class ContainerTemplateDataProvider implements DataProvider {
     private final ActivePublisher publisher;
 
     public ContainerTemplateDataProvider(DataSource dataSource) {
-        this.publisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE"), this);
+        this.publisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE/CONTAINER"), this);
         this.dataSource = dataSource;
     }
 
