@@ -23,7 +23,7 @@ In order for the Liberator and Transformer to know abou the blade they need the 
 1. run `gradle assemble -PconfigOnly`
 2. deploy the zip file created in `build/distributions/` into your Deployment Framework
 3. create a run configuration for the main class of your project
- * set the environment variable `CONFIG_BASE` to point to the `global_config/overrides` folder in your DFW
+ * set the environment variable `CONFIG_BASE` to point to the `global_config/` folder in your DFW
  * set the working directory to `<dfw location>/active_blades/<AdapterName>/DataSource `
 4. Run the adapter using the run configuration just created
 
