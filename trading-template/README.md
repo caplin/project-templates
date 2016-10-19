@@ -39,7 +39,7 @@ Sometimes, the Liberator and Transformer will not be on the host that is being d
  * transformerHost - defaults to `localhost` and will need to be changed to the host Transformer runs on
  * transformerPort - defaults to `15002` and might need to be changed to the Transformer datasrc port
 4. Once the working directory has been created check the generated file `build/env/blade_config/environment-ide.conf` for correctnes of generated arguments
-5. Create a run configuration with the directory `build/env/DataSource` as a working directory
+5. Create a run configuration with the directory `build/env/DataSource` as a working directory and `--trading-property-file=etc/trading-provider.properties` as program arguments
 6. Start the Adapter using the run configuration just created
 
 ### Testing the Adapter
