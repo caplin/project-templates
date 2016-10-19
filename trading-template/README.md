@@ -42,5 +42,16 @@ Sometimes, the Liberator and Transformer will not be on the host that is being d
 5. Create a run configuration with the directory `build/env/DataSource` as a working directory
 6. Start the Adapter using the run configuration just created
 
+### Testing the Adapter
+The template is very limited and does not really contain any valid business logic, but for illustration purposes a simple Trade model is included. Once the adapter is started and connected to Liberator, the following steps can be followed to make sure the template is connected and working.
+
+1. Open the Liberator status page, typically `http://localhost:18080/status/` and check that the TemplateAdapter is shown as UP
+2. Open the Liberator explorer, typically `http://localhost:18080/diagnostics/liberatorexplorer/index.html` and request the subject `/TEMPLATE/TRADE`
+ * at this point the Trading adapter should receive a `Trade created` event and return an empty record to the request
+3. Send a contrib with fields `{ MsgType=Open, TradingProtocol=ESP, RequestID=1, Price=1.234 }` to the subject `/TEMPLATE/TRADE`
+ * this causes the trading library to transition from the state `Initial` to the state `Executing` via the Trigger `Open` sent in the contrib
+ * the template implementation is to assume this is everything that a trade needs and it immediately sends back a `Confirm` message which completes the tarde defined by the state machine in `DataSource/etc/trademodels.xml`
+
+
 ## Issues
 For issues with the templates please contact Caplin Support or raise an issue on Github.
