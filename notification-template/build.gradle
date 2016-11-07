@@ -24,18 +24,19 @@ repositories {
             username "user"         //insert your caplin artifactory username here
             password "secret"       //insert your caplin artifactory password here
         }
-        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache" 
+        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
     }
 }
 
 dependencies {
     compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
+    compile(group: 'com.caplin.cis.java.datasource', name: 'NotificationJava', version: '6.2.+', classifier: 'jar-with-dependencies') { transitive = false }
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.caplin.template.AdapterTemplate',
+                'Main-Class': 'com.caplin.template.NotificationTemplate',
                 "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
         )
     }

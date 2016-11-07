@@ -1,6 +1,6 @@
-# Caplin Pricing Adapter Template
+# Caplin Notification Adapter Template
 
-This project provides a starting point for writing pricing integration Adapters based on the Caplin DataSource Java API. The build is written in gradle and requires either a local installation of gradle or an internet connection over which gradle can be downloaded. This is done seamlessly with the provided `gradlew` script files.
+This project provides a starting point for writing notification integration Adapters based on the Caplin DataSource Java and the NotificationJava API. The build is written in gradle and requires either a local installation of gradle or an internet connection over which gradle can be downloaded. This is done seamlessly with the provided `gradlew` script files.
 
 ## Getting started
 This section outlines the basic steps necessary to build, deploy and start the Adapter.
@@ -10,9 +10,9 @@ This section outlines the basic steps necessary to build, deploy and start the A
 3. change the username and password in the `build.gradle` file to your caplin credentials
 4. run `gradle assemble`
 5. deploy the zip file created in `build/distributions/` into your Deployment Framework
+6. deploy the Caplin AlertsService and make sure that the PersistenceService is activated and running too
 6. configure the host for the deployed blade with the `./dfw hosts` command
 7. start the adapter with `./dfw start <adapterName>`
-
 
 ## Development modes
 In addition to creating an adapter blade that can be deployed using the Caplin Deployment Framework the build has two more tasks that make it easier to run the adapter from an IDE. The two modes modes differ **run against a local DFW** and **run against a remote DFW** and are explained in more detail in the following two sections.

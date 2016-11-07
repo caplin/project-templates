@@ -24,18 +24,20 @@ repositories {
             username "user"         //insert your caplin artifactory username here
             password "secret"       //insert your caplin artifactory password here
         }
-        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache" 
+        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa"
     }
 }
 
 dependencies {
     compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
+    compile(group: 'com.caplin.platform.components.trading', name: 'trading-datasource', version: '6.2.+') { transitive = false }
+
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.caplin.template.AdapterTemplate',
+                'Main-Class': 'com.caplin.template.TradingAdapterTemplate',
                 "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
         )
     }
@@ -49,6 +51,7 @@ task createKit(type: Zip, dependsOn: jar) {
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         include 'blade_config/bootstrap.conf'
+        include 'DataSource/etc/trading-provider.properties'
         if (!project.hasProperty("configOnly")) {
             include 'DataSource/bin/start-jar.sh'
         }
@@ -58,6 +61,7 @@ task createKit(type: Zip, dependsOn: jar) {
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         exclude 'blade_config/bootstrap.conf'
+        exclude 'DataSource/etc/trading-provider.properties'
         exclude 'DataSource/bin/start-jar.sh'
     }
 
