@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tradeModels>
+    <tradeModel name="ESP" initialState="Initial">
+        <state name="Initial">
+            <transition target="Executing" trigger="Open" source="client"></transition>
+        </state>
+        <state name="Executing">
+            <transition target="TradeComplete" trigger="Confirm" source="server"></transition>
+        </state>
+        <state name="TradeComplete"></state>
+    </tradeModel>
+</tradeModels>
