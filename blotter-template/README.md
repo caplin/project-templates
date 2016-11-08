@@ -1,6 +1,6 @@
 # Caplin Blotter Adapter Template
 
-This project provides a starting point for writing notification integration Adapters based on the Caplin DataSource Java and the BlotterJava API. The build is written in gradle and requires either a local installation of gradle or an internet connection over which gradle can be downloaded. This is done seamlessly with the provided `gradlew` script files.
+This project provides a starting point for writing blotter integration Adapters based on the Caplin DataSource Java and the BlotterJava API. The build is written in gradle and requires either a local installation of gradle or an internet connection over which gradle can be downloaded. This is done seamlessly with the provided `gradlew` script files.
 
 ## Getting started
 This section outlines the basic steps necessary to build, deploy and start the Adapter.
