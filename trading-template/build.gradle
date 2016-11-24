@@ -16,16 +16,10 @@ ext {
 
 version = major + "." + minor + "." + patch
 
-
 repositories {
     mavenCentral()
-    maven { 
-        credentials {
-            username "user"         //insert your caplin artifactory username here
-            password "secret"       //insert your caplin artifactory password here
-        }
-        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa"
-    }
+
+    // Your repository here
 }
 
 dependencies {
@@ -42,7 +36,6 @@ jar {
         )
     }
 }
-
 
 task createKit(type: Zip, dependsOn: jar) {
     archiveName = adapterName + "-" + version + ".zip"

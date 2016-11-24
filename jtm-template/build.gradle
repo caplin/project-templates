@@ -18,10 +18,8 @@ version = major + "." + minor + "." + patch
 
 repositories {
     mavenCentral()
-        maven {
-            //TODO: change to public facing client artifactory
-            url "http://artifactory.caplin.com:8081/artifactory/caplin-release/"
-        }
+
+    // Your repository here
 }
 
 dependencies {
