@@ -7,7 +7,7 @@ ext {
     minor = 0
     patch = 0
 
-    adapterName = rootProject.name
+    adapterName = project.name
     replacements = [
             adapterName: adapterName,
     ]
@@ -83,12 +83,14 @@ task setupWorkingDirectory(type: Copy) {
 task createEnvironmentConfig << {
     String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
 
-    String content =    "define THIS_LEG                            ${thisLeg}\n" +
-                        "define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}\n" +
-                        "define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}"
+    String content = """
+                     define THIS_LEG                            ${thisLeg}
+                     define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
+                     define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}
+                     """.stripIndent()
 
-
-    new File(setupWorkingDirectory.getDestinationDir().getAbsolutePath() + "/blade_config/environment-ide.conf").text=content
+    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/").mkdirs()
+    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/environment-ide.conf").text=content
 }
 
 setupWorkingDirectory.finalizedBy createEnvironmentConfig

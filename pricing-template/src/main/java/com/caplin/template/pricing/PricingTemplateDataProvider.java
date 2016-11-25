@@ -1,5 +1,9 @@
 package com.caplin.template.pricing;
 
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.caplin.datasource.DataSource;
 import com.caplin.datasource.SubjectError;
 import com.caplin.datasource.SubjectErrorEvent;
@@ -10,26 +14,25 @@ import com.caplin.datasource.publisher.DataProvider;
 import com.caplin.datasource.publisher.DiscardEvent;
 import com.caplin.datasource.publisher.RequestEvent;
 
-import java.util.concurrent.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class PricingTemplateDataProvider implements DataProvider {
 
     private final DataSource dataSource;
-    private final ActivePublisher publisher;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final ConcurrentHashMap<String, ScheduledFuture> activeSubscriptionsMap = new ConcurrentHashMap<>();
 
-    public PricingTemplateDataProvider(DataSource dataSource) {
+    private ActivePublisher publisher;
 
-        this.publisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE/PRICING"), this);
+    public PricingTemplateDataProvider(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public void initialise() {
+        publisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE/PRICING"), this);
     }
 
     @Override
     public void onRequest(RequestEvent requestEvent) {
-        dataSource.getLogger().log(Level.INFO, "Got request for" + requestEvent.toString());
+        dataSource.getLogger().log(Level.INFO, "Got request for" + requestEvent);
 
         String[] split = requestEvent.getSubject().split("/");
 
@@ -43,14 +46,13 @@ public class PricingTemplateDataProvider implements DataProvider {
 
     @Override
     public void onDiscard(DiscardEvent discardEvent) {
-        dataSource.getLogger().log(Level.INFO, "Got discard for" + discardEvent.toString());
+        dataSource.getLogger().log(Level.INFO, "Got discard for" + discardEvent);
 
         ScheduledFuture scheduledFuture = activeSubscriptionsMap.remove(discardEvent.getSubject());
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
     }
-
 
     private class PriceGenerator implements Runnable {
         private final String subject;
@@ -68,7 +70,6 @@ public class PricingTemplateDataProvider implements DataProvider {
 
         @Override
         public void run() {
-
             price = random.nextBoolean() ? price + random.nextFloat() : price - random.nextFloat();
 
             GenericMessage genericMessage = publisher.getMessageFactory().createGenericMessage(subject);

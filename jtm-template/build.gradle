@@ -7,7 +7,7 @@ ext {
         minor = 0
         patch = 0
 
-    moduleName = rootProject.name
+    moduleName = project.name
     replacements = [
         moduleName: moduleName
     ]

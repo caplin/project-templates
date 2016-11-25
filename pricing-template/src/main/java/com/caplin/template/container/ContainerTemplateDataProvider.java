@@ -1,5 +1,7 @@
 package com.caplin.template.container;
 
+import java.util.logging.Level;
+
 import com.caplin.datasource.DataSource;
 import com.caplin.datasource.messaging.container.ContainerMessage;
 import com.caplin.datasource.messaging.record.RecordType1Message;
@@ -10,17 +12,19 @@ import com.caplin.datasource.publisher.DataProvider;
 import com.caplin.datasource.publisher.DiscardEvent;
 import com.caplin.datasource.publisher.RequestEvent;
 
-import java.util.logging.Level;
-
 public class ContainerTemplateDataProvider implements DataProvider {
 
     private static final int NUM_CONSTITUENTS = 50;
     private final DataSource dataSource;
-    private final ActivePublisher publisher;
+
+    private ActivePublisher publisher;
 
     public ContainerTemplateDataProvider(DataSource dataSource) {
-        this.publisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE/CONTAINER"), this);
         this.dataSource = dataSource;
+    }
+
+    public void initialise() {
+        publisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE/CONTAINER"), this);
     }
 
     @Override
@@ -60,7 +64,5 @@ public class ContainerTemplateDataProvider implements DataProvider {
     }
 
     @Override
-    public void onDiscard(DiscardEvent discardEvent) {
-
-    }
+    public void onDiscard(DiscardEvent discardEvent) {}
 }
