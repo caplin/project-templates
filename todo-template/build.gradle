@@ -1,0 +1,96 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+
+ext {
+    major = 0
+    minor = 0
+    patch = 0
+
+    adapterName = project.name
+    replacements = [
+            adapterName: adapterName,
+    ]
+}
+
+version = major + "." + minor + "." + patch
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.caplin.template.TodoAdapterTemplate',
+                "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
+        )
+    }
+}
+
+
+task createKit(type: Zip, dependsOn: jar) {
+    archiveName = adapterName + "-" + version + ".zip"
+    def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
+
+    into("${topDirName}") {
+        from "${project.projectDir}/blade"
+        include 'blade_config/bootstrap.conf'
+        if (!project.hasProperty("configOnly")) {
+            include 'DataSource/bin/start-jar.sh'
+        }
+        filter(ReplaceTokens, tokens: replacements)
+    }
+
+    into("${topDirName}") {
+        from "${project.projectDir}/blade"
+        exclude 'blade_config/bootstrap.conf'
+        exclude 'DataSource/bin/start-jar.sh'
+    }
+
+    if (!project.hasProperty("configOnly")) {
+        into("${topDirName}/DataSource/lib") {
+            from([project.jar.outputs, configurations.compile])
+        }
+    }
+}
+
+task setupWorkingDirectory(type: Copy) {
+
+    from("${project.projectDir}/blade") {
+        include 'blade_config/bootstrap.conf'
+        filter(ReplaceTokens, tokens: replacements)
+    }
+    from("${project.projectDir}/blade") {
+        exclude 'blade_config/bootstrap.conf'
+        exclude 'DataSource/bin'
+        exclude 'Liberator'
+        exclude 'Transformer'
+    }
+    into("${buildDir}/env")
+}
+
+task createEnvironmentConfig << {
+    String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
+
+    String content = """
+                     define THIS_LEG                            ${thisLeg}
+                     define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
+                     define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}
+                     define TRANSFORMER${thisLeg}_HOST          ${(project.hasProperty("transformerHost") ? project.transformerHost : "localhost")}
+                     define TRANSFORMER${thisLeg}_DATASRCPORT   ${(project.hasProperty("transformerDsPort") ? project.transformerDsPort : "15002")}
+                     """.stripIndent()
+
+
+    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/").mkdirs()
+    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/environment-ide.conf").text=content
+}
+
+setupWorkingDirectory.finalizedBy createEnvironmentConfig
+
+assemble.dependsOn(createKit)

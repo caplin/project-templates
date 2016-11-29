@@ -5,4 +5,5 @@ include ':blotter-template',
         ':notification-template',
         ':permissioning-template',
         ':pricing-template',
-        ':trading-template'
+        ':trading-template',
+        ':todo-template'
