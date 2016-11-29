@@ -46,8 +46,7 @@ public class ContainerTemplateDataProvider {
             public void onRequest(RequestEvent requestEvent) {
                 GenericMessage updateMessage = rowPublisher.getMessageFactory().createGenericMessage(requestEvent.getSubject());
                 updateMessage.setField("currentTime", String.valueOf(System.currentTimeMillis()));
-                rowPublisher.publishInitialMessage(updateMessage); // Publish this update to any new peers
-                rowPublisher.publishToSubscribedPeers(updateMessage); // Publish this update to any existing peers
+                rowPublisher.publishInitialMessage(updateMessage);
             }
 
             @Override
