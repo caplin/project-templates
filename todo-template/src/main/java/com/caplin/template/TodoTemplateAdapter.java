@@ -3,11 +3,11 @@ package com.caplin.template;
 import com.caplin.datasource.DataSource;
 import com.caplin.datasource.DataSourceFactory;
 
-public class TodoAdapterTemplate {
+public class TodoTemplateAdapter {
 
     private final DataSource dataSource;
 
-    public TodoAdapterTemplate(final DataSource dataSource) {
+    public TodoTemplateAdapter(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -20,8 +20,8 @@ public class TodoAdapterTemplate {
     public static void main(final String[] args) {
         final DataSource dataSource = DataSourceFactory.createDataSource(args);
 
-        final TodoAdapterTemplate todoAdapterTemplate = new TodoAdapterTemplate(dataSource);
-        todoAdapterTemplate.initialise();
+        final TodoTemplateAdapter todoTemplateAdapter = new TodoTemplateAdapter(dataSource);
+        todoTemplateAdapter.initialise();
 
         dataSource.start();
     }

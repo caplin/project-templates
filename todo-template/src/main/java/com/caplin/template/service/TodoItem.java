@@ -3,7 +3,7 @@ package com.caplin.template.service;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TodoItem implements Comparable<TodoItem> {
+public class TodoItem {
 
 	private final UUID id = UUID.randomUUID();
 	private String value;
@@ -32,19 +32,6 @@ public class TodoItem implements Comparable<TodoItem> {
 
 	public void setPriority(final long priority) {
 		this.priority = priority;
-	}
-
-	// Sort them first by priority, then by value.
-	// 1 is higher priority than 2 etc.
-	@Override
-	public int compareTo(final TodoItem o) {
-		final int priorityComparison = Long.compare(o.priority, priority);
-		if (priorityComparison == 0) {
-			return value.compareToIgnoreCase(o.value);
-		}
-		else {
-			return priorityComparison;
-		}
 	}
 
 	@Override

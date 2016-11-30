@@ -27,7 +27,7 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.caplin.template.TodoAdapterTemplate',
+                'Main-Class': 'com.caplin.template.TodoTemplateAdapter',
                 "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
         )
     }

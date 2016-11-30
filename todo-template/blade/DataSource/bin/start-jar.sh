@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start the PricingExample Java DataSource.
+# Start the TodoTemplateAdapter Java DataSource.
 #
 # $1 - Path to java executable
 # $2 - Path to datasource XML file
