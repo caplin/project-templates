@@ -9,7 +9,7 @@ public class TodoItem implements Comparable<TodoItem> {
 	private String value;
 	private long priority;
 
-	public TodoItem(final String value, final long priority) {
+	TodoItem(final String value, final long priority) {
 		this.value = value;
 		this.priority = priority;
 	}
