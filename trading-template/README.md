@@ -35,9 +35,9 @@ Sometimes, the Liberator and Transformer will not be on the host that is being d
 3. run `gradle setupWorkingDirectory` which will create the folder `build/env` for use as a working directory. This will also require some default properties to be overridden with the -P command line switch. See the [Gradle Documentation]( https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_properties_and_system_properties). Supported options are:
  * thisLeg - defaults to `1` and only needs to be changed if you want to connect to the failover leg
  * liberatorHost - defaults to `localhost` and will need to be changed to the host Liberator runs on
- * liberatorPort - defaults to `15001` and might need to be changed to the Liberator datasrc port
+ * liberatorDsPort - defaults to `15001` and might need to be changed to the Liberator datasrc port
  * transformerHost - defaults to `localhost` and will need to be changed to the host Transformer runs on
- * transformerPort - defaults to `15002` and might need to be changed to the Transformer datasrc port
+ * transformerDsPort - defaults to `15002` and might need to be changed to the Transformer datasrc port
 4. Once the working directory has been created check the generated file `build/env/blade_config/environment-ide.conf` for correctnes of generated arguments
 5. Create a run configuration with the directory `build/env/DataSource` as a working directory and `--trading-property-file=etc/trading-provider.properties` as program arguments
 6. Start the Adapter using the run configuration just created
