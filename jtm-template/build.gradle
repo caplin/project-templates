@@ -5,12 +5,12 @@ apply plugin: 'eclipse'
 
 ext {
     major = 0
-        minor = 0
-        patch = 0
+    minor = 0
+    patch = 0
 
     moduleName = rootProject.name
     replacements = [
-        moduleName: moduleName
+            moduleName: moduleName
     ]
 }
 
@@ -19,10 +19,13 @@ version = major + "." + minor + "." + patch
 
 repositories {
     mavenCentral()
-        maven {
-            //TODO: change to public facing client artifactory
-            url "http://artifactory.caplin.com:8081/artifactory/caplin-release/"
+    maven {
+        credentials {
+            username "user"         //insert your caplin artifactory username here
+            password "secret"       //insert your caplin artifactory password here
         }
+        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
+    }
 }
 
 dependencies {
@@ -39,13 +42,13 @@ task createKit(type: Zip, dependsOn: [jar, javadoc]) {
     archiveName = moduleName + "-" + version + ".zip"
     def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
 
-    into ("${topDirName}") {
+    into("${topDirName}") {
         from "${project.projectDir}/blade"
         rename 'module.conf', "${moduleName}.conf"
         filter(ReplaceTokens, tokens: replacements)
     }
 
-    into ("${topDirName}/Transformer/lib/java") {
+    into("${topDirName}/Transformer/lib/java") {
         from([project.jar.outputs, configurations.compile])
     }
 }
