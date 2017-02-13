@@ -1,0 +1,56 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+
+ext {
+    major = 0
+    minor = 0
+    patch = 0
+
+    moduleName = rootProject.name
+    replacements = [
+            moduleName: moduleName
+    ]
+}
+
+version = major + "." + minor + "." + patch
+
+
+repositories {
+    mavenCentral()
+    maven {
+        credentials {
+            username "user"         //insert your caplin artifactory username here
+            password "secret"       //insert your caplin artifactory password here
+        }
+        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
+    }
+}
+
+
+dependencies {
+    compile group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+', {
+        transitive = false
+    }
+}
+
+jar {
+    version = null
+}
+
+task createKit(type: Zip, dependsOn: [jar, javadoc]) {
+    archiveName = moduleName + "-" + version + ".zip"
+    def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
+
+    into("${topDirName}") {
+        from "${project.projectDir}/blade"
+        rename 'module.conf', "${moduleName}.conf"
+        filter(ReplaceTokens, tokens: replacements)
+    }
+
+    into("${topDirName}/Transformer/lib/java") {
+        from([project.jar.outputs, configurations.compile])
+    }
+}
+
+assemble.dependsOn(createKit)
