@@ -127,4 +127,4 @@ Follow the steps below to build and deploy your adapter.
 
 
 ## How to report issues with the template
-To report an issue with the template, please contact Caplin Support or raise an issue on Github.
+To report an issue with the template, please contact Caplin Support or [raise an issue](https://github.com/caplin/project-templates/issues) on GitHub.
