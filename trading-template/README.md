@@ -1,21 +1,21 @@
-# Caplin Blotter Adapter Template
+# Caplin Trading Adapter Template
 
-This project provides a starting point for writing blotter integration adapters based on Caplin's Java [DataSource API](http://www.caplin.com/developer/component/datasource) and Caplin's Java [Blotter Integration API](http://www.caplin.com/developer/component/cis-toolkit/features-and-concepts/cis-blotter-integration-api-java).
+This project provides a starting point for writing trading integration adapters based on Caplin's Java [DataSource API](http://www.caplin.com/developer/component/datasource) and Caplin's Java [Trading DataSource API](http://www.caplin.com/developer/api/cis/latest/?com/caplin/trading/package-summary.html).
 
 The build script, `gradle.build`, requires a local installation of [Gradle](https://gradle.org/). Alternatively, you can run the build commands using the provided Gradle Wrapper, `gradlew`. For more information on using a Gradle Wrapper, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
 
 
 ## Getting started
 
-Follow the instructions below to download and configure a Blotter Adapter Template.
+Follow the instructions below to download and configure a Trading Adapter Template.
 
 1. Download or clone the Caplin Project Templates repository.
 
-1. In the `blotter-template/settings.gradle` file, change the value of the `rootProject.name` property to the name of your adapter project. The project name will be used as the name for the [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade).
+1. In the `trading-template/settings.gradle` file, change the value of the `rootProject.name` property to the name of your adapter project. The project name will be used as the name for the [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade).
 
-1. In the `blotter-template/build.gradle` file, change the username and password to your Caplin credentials.
+1. In the `trading-template/build.gradle` file, change the username and password to your Caplin credentials.
 
-The Blotter Adapter Template does not include the libraries required to build a Caplin Platform adapter. These libraries are downloaded when you build the adapter for the first time or when you import the template directory to an IDE with Gradle support.
+The Trading Adapter Template does not include the libraries required to build a Caplin Platform adapter. These libraries are downloaded when you build the adapter for the first time or when you import the template directory to an IDE with Gradle support.
 
 
 ## Running your adapter within an IDE
@@ -31,7 +31,7 @@ This section describes how to connect an adapter in an IDE to a Liberator or Tra
 
 To provide Liberator or Transformer with your adapter's configuration, follow the steps below:
 
-1. From the blotter template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
+1. From the trading template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
 
 1. Copy the config-only blade to the `kits` directory of your local DFW.
 
@@ -45,11 +45,9 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. In your IDE, create a run configuration for the main class of your project:
 
-    1. Set the working directory to <code><em>dfw_location</em>/activate_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
+    1. Set the run configuration's working directory to <code><em>dfw_location</em>/activate_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
 
     1. Create a run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to.
-    
-    1. Set `--trading-property-file=etc/trading-provider.properties` as a program argument.
 
 1. Run the adapter using the new run configuration.
 
@@ -60,7 +58,7 @@ This section describes how to connect an adapter in an IDE to a Liberator or Tra
 
 To provide Liberator or Transformer with your adapter's configuration, follow the steps below:
 
-1. From the blotter template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
+1. From the trading template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
 
 1. Copy the config-only blade to the `kits` directory of the remote DFW.
 
@@ -72,7 +70,7 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
-1. From the blotter template root, run `gradle setupWorkingDirectory`, specifying one or more of the properties listed below.
+1. From the trading template root, run `gradle setupWorkingDirectory`, specifying one or more of the properties listed below.
 
     The `setupWorkingDirectory` task creates a minimal execution environment for your adapter under `build/env`. The environment includes a working directory and the minimal configuration required to connect to the remote Liberator or Transformer.
 
@@ -90,20 +88,49 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. Open the generated configuration file `build/env/blade_config/environment-ide.conf` and check that the configuration has been generated correctly. Make manual corrections to the file as required.
 
-1. In your IDE, create a run configuration for the main class of your project:
-
-    1. Set the working directory to `build/env/DataSource`.
-
-    1. Set `--trading-property-file=etc/trading-provider.properties` as a program argument.
+1. In your IDE, create a run configuration with the working directory set to `build/env/DataSource`.
 
 1. Run the adapter using the new run configuration.
+
+
+### Testing the adapter
+The template includes a simplistic, example trade model in the file `DataSource/etc/trademodels.xml`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<tradeModels>
+    <tradeModel name="ESP" initialState="Initial">
+        <state name="Initial">
+            <transition target="Executing" trigger="Open" source="client" />
+        </state>
+        <state name="Executing">
+            <transition target="TradeComplete" trigger="Confirm" source="server" />
+        </state>
+        <state name="TradeComplete" />
+    </tradeModel>
+</tradeModels>
+```
+
+Once the adapter has started and is connected to Liberator, follow the steps below to confirm that the adapter is working. The steps assume that Liberator is running on your local development machine.
+
+1. Open the Liberator status page, `http://localhost:18080/status/`, and check that the status of the TemplateAdapter is 'UP'.
+
+2. Open the Liberator Explorer,  `http://localhost:18080/diagnostics/liberatorexplorer/index.html`, and request the subject `/TEMPLATE/TRADE`.
+
+    The trading adapter receives a `Trade created` event and returns an empty record.
+
+3. Send a contrib with fields `{ MsgType=Open, TradingProtocol=ESP, RequestID=1, Price=1.234 }` to the subject `/TEMPLATE/TRADE`.
+
+    On receiving the contrib containing the trigger `Open`, the trading library transitions from state `Initial` to state `Executing`. For the sake of simplicity, and because the example adapter is not connected to a backend trading system, the example adapter assumes that the trade completes immediately and successfully.
+
+    The adapter returns a `Confirm` message that completes the trade.
 
 
 ## Setting JVM options
 
 To pass options to the Java virtual machine (JVM) that runs your adapter in your IDE, add the JVM options to the adapter's run configuration.
 
-To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `blotter-template/blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
+To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `trading-template/blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
 
 ```bash
 if [ $confreading = 1 ]; then
@@ -134,4 +161,4 @@ Follow the steps below to build and deploy your adapter.
 
 
 ## How to report issues with the template
-To report an issue with the template, please contact Caplin Support or [raise an issue](https://github.com/caplin/project-templates/issues) on GitHub.
+To report an issue with the template, please contact Caplin Support or [raise an issue](https://github.com/caplin/project-templates/issues) on Github.
