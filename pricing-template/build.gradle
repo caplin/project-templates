@@ -19,8 +19,13 @@ version = major + "." + minor + "." + patch
 
 repositories {
     mavenCentral()
-
-    // Your repository here
+    maven {
+        credentials {
+            username "user"         //insert your caplin artifactory username here
+            password "secret"       //insert your caplin artifactory password here
+        }
+        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
+    }
 }
 
 dependencies {
