@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start the PricingExample Java DataSource.
+# Start the Permissioning Template Java Adapter.
 #
 # $1 - Path to java executable
 # $2 - Path to datasource config file

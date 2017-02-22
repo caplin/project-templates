@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start the Trading Template Adapter Java DataSource.
+# Start the Trading Template Java Adapter.
 #
 # $1 - Path to java executable
 # $2 - Path to datasource conf file
