@@ -1,13 +1,14 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
 ext {
     major = 0
     minor = 0
     patch = 0
 
-    moduleName = project.name
+    moduleName = rootProject.name
     replacements = [
             moduleName: moduleName
     ]
@@ -27,9 +28,8 @@ repositories {
     }
 }
 
-
 dependencies {
-    compile group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+', {
+    compile group: 'com.caplin.platform.components', name: 'TransformerModule', version: '6.2.+', {
         transitive = false
     }
 }
