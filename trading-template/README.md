@@ -137,7 +137,7 @@ if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   java -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+   java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
    echo $!
 fi
 ```
@@ -145,7 +145,7 @@ fi
 For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
 
 ```bash
-java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
 ```
 
 **Note**: The JVM heap sizes in this example are illustrative only. Profile your adapter to determine the optimal values for your use cases.
