@@ -25,7 +25,7 @@ A Java Transformer Module (JTM) can be run only within Transformer's embedded JV
 
 **To setup remote debugging:**
 
-1. In the Deployment Framework file `global_config/overrides/servers/Transformer/java.conf`, set the configuration item `TRANSFORMER_JVM_DEBUGGER_PORT` to a valid port number.
+1. In the Deployment Framework file `global_config/overrides/servers/Transformer/etc/java.conf`, set the configuration item `TRANSFORMER_JVM_DEBUGGER_PORT` to a valid port number.
 
     **Note**: if your Transformer is on a remote server, check that the server's firewall does not block the port number you assign to `TRANSFORMER_JVM_DEBUGGER_PORT`.
 
