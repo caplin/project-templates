@@ -88,7 +88,11 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. Open the generated configuration file `build/env/blade_config/environment-ide.conf` and check that the configuration has been generated correctly. Make manual corrections to the file as required.
 
-1. In your IDE, create a run configuration with the working directory set to `build/env/DataSource`.
+1. In your IDE, create a run configuration for the main class of your project:
+
+     * set the working directory to `build/env/DataSource`
+     
+     * add a new command line argument: `--trading-property-file=etc/trading-provider.properties`
 
 1. Run the adapter using the new run configuration.
 
