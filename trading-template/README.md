@@ -66,8 +66,6 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 1. From the root of the remote DFW, run the command `./dfw versions` to confirm that the config blade has been deployed.
 
-**Note**: if you change your adapter's configuration, you must repeat the steps above.
-
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
 1. From the trading template root, run `gradle setupWorkingDirectory`, specifying one or more of the properties listed below.
@@ -96,6 +94,7 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. Run the adapter using the new run configuration.
 
+**Note**: if you change your adapter's configuration, you must repeat the steps above.
 
 ### Testing the adapter
 The template includes a simplistic, example trade model in the file `DataSource/etc/trademodels.xml`:
