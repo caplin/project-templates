@@ -123,21 +123,18 @@ Once the adapter has started and is connected to Liberator, follow the steps bel
 
     The trading adapter receives a `Trade created` event and returns an empty record.
 
-3. Send a contribution to the subject `/TEMPLATE/TRADE`. Include the following field-value pairs in the contribution:
+3. Create and send a new contribution to the subject `/TEMPLATE/TRADE`. Include the following field-value pairs in the contribution:
 
-    * MsgType=Open
+    ```
+    MsgType=Open
+    TradingProtocol=ESP
+    RequestID=1
+    Price=1.234
+    ```
     
-    * TradingProtocol=ESP
+    For instructions on how to create a contribution, see [Using Liberator Explorer to Request and Send Data](https://www.caplin.com/developer/component/liberator/how-can-i/liberator-use-liberator-explorer-to-request-and-send-data#Publishing-data-contributions).
     
-    * RequestID=1
-    
-    * Price=1.234
-
-    For more information on using Liberator Explorer to send a contribution to a messaging channel, see [Using Liberator Explorer to Request and Send Data](https://www.caplin.com/developer/component/liberator/how-can-i/liberator-use-liberator-explorer-to-request-and-send-data#Publishing-data-contributions).
-    
-    On receiving the contribution, the trading library transitions from state `Initial` to state `Executing`. For the sake of simplicity, and because the example adapter is not connected to a backend trading system, the example adapter assumes that the trade completes immediately and successfully.
-
-    The adapter returns a `Confirm` message that completes the trade.
+    On receiving the contribution, the trading library transitions from state `Initial` to state `Executing`. The example adapter assumes that the trade completes successfully and immediately returns a `Confirm` message.
 
 
 ## Setting JVM options
