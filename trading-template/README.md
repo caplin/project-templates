@@ -66,8 +66,6 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 1. From the root of the remote DFW, run the command `./dfw versions` to confirm that the config blade has been deployed.
 
-**Note**: if you change your adapter's configuration, you must repeat the steps above.
-
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
 1. From the trading template root, run `gradle setupWorkingDirectory`, specifying one or more of the properties listed below.
@@ -88,10 +86,15 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. Open the generated configuration file `build/env/blade_config/environment-ide.conf` and check that the configuration has been generated correctly. Make manual corrections to the file as required.
 
-1. In your IDE, create a run configuration with the working directory set to `build/env/DataSource`.
+1. In your IDE, create a run configuration for the main class of your project:
+
+     * set the working directory to `build/env/DataSource`
+     
+     * add a new command line argument: `--trading-property-file=etc/trading-provider.properties`
 
 1. Run the adapter using the new run configuration.
 
+**Note**: if you change your adapter's configuration, you must repeat the steps above.
 
 ### Testing the adapter
 The template includes a simplistic, example trade model in the file `DataSource/etc/trademodels.xml`:
@@ -119,11 +122,18 @@ Once the adapter has started and is connected to Liberator, follow the steps bel
 
     The trading adapter receives a `Trade created` event and returns an empty record.
 
-3. Send a contrib with fields `{ MsgType=Open, TradingProtocol=ESP, RequestID=1, Price=1.234 }` to the subject `/TEMPLATE/TRADE`.
+3. Create and send a new contribution to the subject `/TEMPLATE/TRADE`. Include the following field-value pairs in the contribution:
 
-    On receiving the contrib containing the trigger `Open`, the trading library transitions from state `Initial` to state `Executing`. For the sake of simplicity, and because the example adapter is not connected to a backend trading system, the example adapter assumes that the trade completes immediately and successfully.
-
-    The adapter returns a `Confirm` message that completes the trade.
+    ```
+    MsgType=Open
+    TradingProtocol=ESP
+    RequestID=1
+    Price=1.234
+    ```
+    
+    For instructions on how to create a contribution, see [Using Liberator Explorer to Request and Send Data](https://www.caplin.com/developer/component/liberator/how-can-i/liberator-use-liberator-explorer-to-request-and-send-data#Publishing-data-contributions).
+    
+    On receiving the contribution, the trading library transitions from state `Initial` to state `Executing`. The example adapter assumes that the trade completes successfully and immediately returns a `Confirm` message.
 
 
 ## Setting JVM options
@@ -137,7 +147,7 @@ if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   java -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+   java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
    echo $!
 fi
 ```
@@ -145,7 +155,7 @@ fi
 For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
 
 ```bash
-java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
 ```
 
 **Note**: The JVM heap sizes in this example are illustrative only. Profile your adapter to determine the optimal values for your use cases.
