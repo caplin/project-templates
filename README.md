@@ -1,4 +1,4 @@
-# Caplin project templates -- PREVIEW
+# Caplin Project Templates -- PREVIEW
 
 * This is a preview of what is to come and can change any time
 * Currently all the builds point to an internal artifactory for dependency resolution
