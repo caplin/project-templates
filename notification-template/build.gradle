@@ -12,26 +12,26 @@ ext {
     replacements = [
             adapterName: adapterName,
     ]
-
 }
 
 version = major + "." + minor + "." + patch
 
-
 repositories {
-    mavenCentral()
+    flatDir {
+        dirs 'lib'
+    }
     maven { 
         credentials {
             username "user"         //insert your caplin artifactory username here
             password "secret"       //insert your caplin artifactory password here
         }
-        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
+        url "https://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
     }
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
-    compile(group: 'com.caplin.cis.java.datasource', name: 'NotificationJava', version: '6.2.+', classifier: 'jar-with-dependencies') { transitive = false }
+    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') {transitive = false}
+    compile(group: 'com.caplin.cis.java.datasource', name: 'NotificationJava', version: '6.2.+', classifier: 'jar-with-dependencies') {transitive = false}
 }
 
 jar {
@@ -42,7 +42,6 @@ jar {
         )
     }
 }
-
 
 task createKit(type: Zip, dependsOn: jar) {
     archiveName = adapterName + "-" + version + ".zip"
