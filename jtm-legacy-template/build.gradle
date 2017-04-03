@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 ext {
     major = 0
@@ -18,7 +19,7 @@ version = major + "." + minor + "." + patch
 
 repositories {
     flatDir {
-        dirs 'flat-dir-repo'
+        dirs 'lib'
     }
     maven {
         credentials {

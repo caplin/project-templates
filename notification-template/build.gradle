@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 ext {
     major = 0
@@ -18,7 +19,7 @@ version = major + "." + minor + "." + patch
 
 repositories {
     flatDir {
-        dirs 'flat-dir-repo'
+        dirs 'lib'
     }
     maven { 
         credentials {
@@ -30,8 +31,8 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') {transitive = false}
-    compile(group: 'com.caplin.cis.java.datasource', name: 'NotificationJava', version: '6.2.+', classifier: 'jar-with-dependencies') {transitive = false}
+    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+', classifier: 'jar-with-dependencies') {transitive = false}
+    compile(group: 'com.caplin.cis.java.datasource', name: 'NotificationJava', version: '6.2.+') {transitive = false}
 }
 
 jar {
