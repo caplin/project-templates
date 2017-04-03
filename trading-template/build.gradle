@@ -18,12 +18,12 @@ version = major + "." + minor + "." + patch
 
 repositories {
     flatDir {
-        dirs 'lib'
+        dirs 'flat-dir-repo'
     }
     maven { 
         credentials {
-          username "user"         //insert your caplin artifactory username here
-          password "secret"       //insert your caplin artifactory password here
+            username "user"         //insert your caplin artifactory username here
+            password "secret"       //insert your caplin artifactory password here
         }
         url "https://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa"
     }
