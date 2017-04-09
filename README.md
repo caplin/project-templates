@@ -4,13 +4,13 @@ The Caplin Project Templates are set of template Java projects to get you starte
 
 | Template | Directory |
 |--------------------|---------|
-| Pricing Adapter Template | [./pricing-template](https://github.com/caplin/project-templates/tree/master/pricing-template) |
-| Trading Adapter Template | [./trading-template](https://github.com/caplin/project-templates/tree/master/trading-template) |
-| Permissioning Adapter Template | [./permissioning-template](https://github.com/caplin/project-templates/tree/master/permissioning-template) |
-| Notification Adapter Template | [./notification-template](https://github.com/caplin/project-templates/tree/master/notification-template) |
-| Blotter Adapter Template | [./blotter-template](https://github.com/caplin/project-templates/tree/master/blotter-template) |
-| Java Transformer Module (Tranformer 6) | [./jtm-legacy-template](https://github.com/caplin/project-templates/tree/master/jtm-legacy-template) |
-| Java Transformer Module (Transformer 7) | [./jtm-template](https://github.com/caplin/project-templates/tree/master/jtm-template)
+| Pricing Adapter Template | [./pricing-template](./pricing-template) |
+| Trading Adapter Template | [./trading-template](./trading-template) |
+| Permissioning Adapter Template | [./permissioning-template](./permissioning-template) |
+| Notification Adapter Template | [./notification-template](./notification-template) |
+| Blotter Adapter Template | [./blotter-template](./blotter-template) |
+| Java Transformer Module (Tranformer 6) | [./jtm-legacy-template](./jtm-legacy-template) |
+| Java Transformer Module (Transformer 7) | [./jtm-template](./jtm-template)
 
 Each template is a [Gradle](https://gradle.org/) project that comprises:
 
