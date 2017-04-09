@@ -19,13 +19,13 @@ Each template is a [Gradle](https://gradle.org/) project that comprises:
 
 ## Instructions
 
-At a high-level, the instructions for each template follow the tasks below:
+At a high-level, the instructions for using each template are as follows:
 
 1. Clone this repository, or download it as a ZIP file and extract it.
 1. Make a copy of a template and customise it:
-    1. Set the project name.
+    1. Set the project name in the file `settings.gradle`.
     1. Add dependencies to the template's `lib` directory, or configure Gradle to download dependencies automatically from the Caplin software repository (coming soon).
-1. Import your customised copy into your IDE as a new project.
+1. Import your customised template into your IDE as a new project.
 1. [optional] Import your project into your own version control system.
 
 For detailed instructions, see the `README.md` file inside each template directory.
