@@ -94,8 +94,12 @@ To provide your adapter with a working directory and the configuration of the Li
 1. In your IDE, create a run configuration for the main class of your project:
 
     1. Set the run configuration's working directory to <code><em>dfw_location</em>/active_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
+    
+        **Note**: on Microsoft Windows, which does not recognise Unix-style symbolic links, use the path <code><em>dfw_location</em>\\kits\\<em>adapter_name</em>\\<em>adapter_name-version</em>\\DataSource</code>
 
     1. Create a run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to.
+    
+        **Note**: the value of `CONFIG_BASE` must end with a trailing slash.
 
     1. Add a command line argument: `--trading-property-file=etc/trading-provider.properties`
 
