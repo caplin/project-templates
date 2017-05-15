@@ -28,6 +28,8 @@ Follow the instructions below to create a new adapter project based on the Prici
 
 1. Edit the file `~/src/MyPricingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPricingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade), the project name will be used as the name for the blade.
 
+1. Edit the file `~/src/MyPricingAdapter/blade/blade_config/bootstrap.conf`. Set the value of the configuration variable `ROUTE_BY_TRANSFORMER` to `TRUE` (default) to configure Liberator to route requests to the adapter via Transformer or `FALSE` to configure Liberator to route requests directly to the adapter.
+
 1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin software repository (coming soon).
 
     * **Manual download**: copy the latest versions of the following Caplin software libraries to the `~/src/MyPricingAdapter/lib` directory:
@@ -35,6 +37,7 @@ Follow the instructions below to create a new adapter project based on the Prici
         * <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
 
     * **Caplin software repository**: (coming soon.) Edit the file `~/src/MyPricingAdapter/build.gradle`, and supply the credentials to your Caplin account in the `repositories` section.
+    
 
 ### Import your new project into an IDE
 Follow the instructions below to import your new adapter project into Eclipse or IntelliJ IDEA.
