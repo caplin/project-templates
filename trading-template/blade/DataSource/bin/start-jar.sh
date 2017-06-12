@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start the Trading Template Adapter Java DataSource.
+# Start the Trading Template Java Adapter.
 #
 # $1 - Path to java executable
 # $2 - Path to datasource conf file
@@ -28,6 +28,6 @@ if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   java -cp "$classpath" -jar "$jar" --trading-property-file=etc/trading-provider.properties "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+   java -cp "$classpath" -jar "$jar" --trading-property-file=etc/trading-provider.properties "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
    echo $!
 fi

@@ -1,6 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
 ext {
     major = 0
@@ -11,16 +12,21 @@ ext {
     replacements = [
             adapterName: adapterName,
     ]
-
 }
 
 version = major + "." + minor + "." + patch
 
-
 repositories {
-    mavenCentral()
-
-    // Your repository here
+    flatDir {
+        dirs 'lib'
+    }
+    maven { 
+        credentials {
+            username "user"         //insert your caplin artifactory username here
+            password "secret"       //insert your caplin artifactory password here
+        }
+        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
+    }
 }
 
 dependencies {
@@ -36,7 +42,6 @@ jar {
         )
     }
 }
-
 
 task createKit(type: Zip, dependsOn: jar) {
     archiveName = adapterName + "-" + version + ".zip"

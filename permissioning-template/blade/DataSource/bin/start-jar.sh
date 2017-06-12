@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start the PricingExample Java DataSource.
+# Start the Permissioning Template Java Adapter.
 #
 # $1 - Path to java executable
 # $2 - Path to datasource config file
@@ -28,6 +28,6 @@ if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   java -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+   java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
    echo $!
 fi
