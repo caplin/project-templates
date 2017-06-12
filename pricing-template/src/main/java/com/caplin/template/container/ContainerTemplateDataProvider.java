@@ -41,7 +41,7 @@ public class ContainerTemplateDataProvider {
             public void onDiscard(DiscardEvent discardEvent) {}
         });
 
-        rowPublisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE/CONTAINER/CONTAINERROW"), new DataProvider() {
+        rowPublisher = dataSource.createActivePublisher(new PrefixNamespace("/TEMPLATE/CONTAINERROW_"), new DataProvider() {
             @Override
             public void onRequest(RequestEvent requestEvent) {
                 GenericMessage updateMessage = rowPublisher.getMessageFactory().createGenericMessage(requestEvent.getSubject());
