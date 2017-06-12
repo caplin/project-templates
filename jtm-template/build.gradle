@@ -21,19 +21,16 @@ repositories {
         dirs 'lib'
     }
     maven {
-            mavenCentral()
-//        credentials {
-//            username "user"         //insert your caplin artifactory username here
-//            password "secret"       //insert your caplin artifactory password here
-//        }
-//        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
-            url "http://artifactory.caplin.com/artifactory/caplin-ci"
-//    }
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "http://nexus.caplin.com:8081/caplin-release"
     }
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+') {transitive = false}
+    compile(group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+') { transitive = false }
 }
 
 jar {
