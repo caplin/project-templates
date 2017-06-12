@@ -1,9 +1,0 @@
-rootProject.name = 'all-templates'
-
-include ':blotter-template',
-        ':jtm-legacy-template',
-        ':jtm-template',
-        ':notification-template',
-        ':permissioning-template',
-        ':pricing-template',
-        ':trading-template'
