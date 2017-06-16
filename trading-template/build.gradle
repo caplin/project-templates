@@ -20,19 +20,18 @@ repositories {
     flatDir {
         dirs 'lib'
     }
-    maven { 
+    maven {
         credentials {
-            username "user"         //insert your caplin artifactory username here
-            password "secret"       //insert your caplin artifactory password here
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
         }
-        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa"
+        url "http://nexus.caplin.com:8081/caplin-release"
     }
 }
 
 dependencies {
     compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
     compile(group: 'com.caplin.platform.components.trading', name: 'trading-datasource', version: '6.2.+') { transitive = false }
-
 }
 
 jar {

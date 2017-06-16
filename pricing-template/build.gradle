@@ -22,10 +22,10 @@ repositories {
     }
     maven {
         credentials {
-            username "user"         //insert your caplin artifactory username here
-            password "secret"       //insert your caplin artifactory password here
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
         }
-        url "http://clientartifactory.caplin.com/artifactory/caplin-artifactory-caplin-qa-cache"
+        url "http://nexus.caplin.com:8081/caplin-release"
     }
 }
 
