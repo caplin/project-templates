@@ -11,10 +11,10 @@ This template is a [Gradle](https://gradle.org/) project. To avoid compatibility
 
 Follow the instructions below to create a new adapter project based on the Notification Adapter Template.
 
-### Copy and customise the template
 
 1. Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
+### Copy and customise the template
     * `wget http://github.com/caplin/project-templates/archive/master.zip`
 
         `unzip -qoa master.zip`
@@ -29,13 +29,20 @@ Follow the instructions below to create a new adapter project based on the Notif
 
 1. Edit the file `~/src/MyNotificationAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyNotificationAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade), the project name will be used as the name for the blade.
 
-1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin software repository (coming soon).
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
 
-    * **Manual download**: copy the latest versions of the following Caplin software libraries to the `~/src/MyNotificationAdapter/lib` directory:
+    * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyNotificationAdapter/lib` directory:
 
         * <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        
+        * <code>NotificationJava-<em>version</em>.jar</code>
 
-    * **Caplin software repository**: (coming soon.) Edit the file `~/src/MyNotificationAdapter/build.gradle`, and supply the credentials to your Caplin account in the `repositories` section.
+    * **Caplin Software Repository**: create the file `~/src/MyNotificationAdapter/gradle.properties`, and assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
+    
+        ```
+        caplinNexusUser=<username>
+        caplinNexusSecret=<password>
+        ```
 
 ### Import your new project into an IDE
 Follow the instructions below to import your new adapter project into Eclipse or IntelliJ IDEA.

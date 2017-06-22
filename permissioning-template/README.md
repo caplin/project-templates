@@ -29,15 +29,20 @@ Follow the instructions below to create a new adapter project based on the Permi
 
 1. Edit the file `~/src/MyPermissioningAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPermissioningAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade), the project name will be used as the name for the blade.
 
-1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin software repository (coming soon).
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
 
-    * **Manual download**: copy the latest versions of the following Caplin software libraries to the `~/src/MyPermissioningAdapter/lib` directory:
+    * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyPermissioningAdapter/lib` directory:
 
         * <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
-
+        
         * <code>permissioning-datasource-<em>version</em>.jar</code>
 
-    * **Caplin software repository**: (coming soon.) Edit the file `~/src/MyPermissioningAdapter/build.gradle`, and supply the credentials to your Caplin account in the `repositories` section.
+    * **Caplin Software Repository**: create the file `~/src/MyPermissioningAdapter/gradle.properties`, assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
+    
+        ```
+        caplinNexusUser=<username>
+        caplinNexusSecret=<password>
+        ```
 
 ### Import your new project into an IDE
 Follow the instructions below to import your new adapter project into Eclipse or IntelliJ IDEA.
