@@ -25,12 +25,12 @@ repositories {
             username "$caplinNexusUser"
             password "$caplinNexusSecret"
         }
-        url "http://nexus.caplin.com:8081/caplin-release"
+        url "https://repository.caplin.com"
     }
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components', name: 'TransformerModule', version: '6.2.+') { transitive = false }
+    compile(group: 'com.caplin.platform.components', name: 'TransformerModule', version: '7.0.+')
 }
 
 jar {
