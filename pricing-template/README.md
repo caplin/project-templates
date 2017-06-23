@@ -1,4 +1,4 @@
-# Caplin Pricing Adapter Template
+# Caplin Pricing Adapter
 
 This template project provides a starting point for writing pricing integration adapters based on Caplin's Java [DataSource API](http://www.caplin.com/developer/component/datasource).
 

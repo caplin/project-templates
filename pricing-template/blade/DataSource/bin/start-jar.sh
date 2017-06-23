@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start the Pricing Template Java Adapter.
+# Start the Pricing Java Adapter.
 #
 # $1 - Path to java executable
 # $2 - Path to datasource XML file
