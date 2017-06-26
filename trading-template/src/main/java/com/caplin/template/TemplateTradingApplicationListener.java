@@ -1,24 +1,24 @@
 package com.caplin.template;
 
-import com.caplin.trading.*;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.caplin.trading.*;
+
 class TemplateTradingApplicationListener implements TradingApplicationListener {
 
-    private final TradeListener tradeListener;
     private final Logger logger;
+    private TemplateTradeChannelListener tradeChannelListener;
 
-    public TemplateTradingApplicationListener(TradeListener tradeListener, Logger logger) {
-        this.tradeListener = tradeListener;
+    public TemplateTradingApplicationListener(Logger logger) {
         this.logger = logger;
     }
 
     @Override
     public void channelCreated(TradeChannel channel) throws TradeException {
         logger.log(Level.INFO, "Trade channel created: " + channel.toString());
-        channel.setTradeChannelListener(new TemplateTradeChannelListener(tradeListener, logger));
+        tradeChannelListener = new TemplateTradeChannelListener(logger);
+        channel.setTradeChannelListener(tradeChannelListener);
     }
 
     @Override

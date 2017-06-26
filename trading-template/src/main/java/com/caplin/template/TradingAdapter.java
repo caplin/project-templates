@@ -21,13 +21,11 @@ public class TradingAdapter implements ConnectionListener{
     private final DataSource dataSource;
 
     private final TradingApplicationListener templateTradingApplicationListener;
-    private final TemplateTradeListener templateTradeListener;
 
     public TradingAdapter(DataSource dataSource) throws IOException {
         this.dataSource = dataSource;
 
-        templateTradeListener = new TemplateTradeListener(dataSource.getLogger());
-        templateTradingApplicationListener = new TemplateTradingApplicationListener(templateTradeListener, dataSource.getLogger());
+        templateTradingApplicationListener = new TemplateTradingApplicationListener(dataSource.getLogger());
 
         new TradingProvider(templateTradingApplicationListener, dataSource);
     }
