@@ -20,13 +20,13 @@ repositories {
     flatDir {
         dirs 'lib'
     }
-    maven {
-        credentials {
-            username "$caplinNexusUser"
-            password "$caplinNexusSecret"
-        }
-        url "http://nexus.caplin.com:8081/caplin-release"
-    }
+//    maven {
+//        credentials {
+//            username "$caplinNexusUser"
+//            password "$caplinNexusSecret"
+//        }
+//        url "http://nexus.caplin.com:8081/caplin-release"
+//    }
 }
 
 dependencies {
