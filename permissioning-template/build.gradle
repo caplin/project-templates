@@ -20,18 +20,18 @@ repositories {
     flatDir {
         dirs 'lib'
     }
-    maven {
-        credentials {
-            username "$caplinNexusUser"
-            password "$caplinNexusSecret"
-        }
-        url "http://nexus.caplin.com:8081/caplin-release"
-    }
+//    maven {
+//        credentials {
+//            username "$caplinNexusUser"
+//            password "$caplinNexusSecret"
+//        }
+//        url "http://nexus.caplin.com:8081/caplin-release"
+//    }
 }
 
 dependencies {
     compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
-    compile(group: 'com.caplin.platform.components.permissioning', name: 'permissioning-datasource', version: '6.2.+', classifier: 'jar-with-dependencies') { transitive = false }
+    compile(group: 'com.caplin.platform.components.permissioning', name: 'permissioning-datasource', version: '6.2.+') { transitive = false }
 }
 
 jar {
