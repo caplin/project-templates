@@ -1,8 +1,8 @@
 package com.caplin.template;
 
-import com.caplin.trading.*;
-
 import java.util.logging.Logger;
+
+import com.caplin.trading.*;
 
 public class TemplateTradeListener implements TradeListener {
     private Logger logger;
@@ -14,15 +14,6 @@ public class TemplateTradeListener implements TradeListener {
     @Override
     public void receiveEvent(TradeEvent event) throws TradeException {
         logger.info("Received trade event: " + event.toString());
-
-        switch (event.getType()) {
-            case "Open":
-                String price = event.getField("Price");
-                logger.info("Received trade for price " + (price != null ? price : "(null)"));
-                TradeEvent confirm = event.getTrade().createEvent("Confirm");
-                event.getTrade().sendEvent(confirm);
-                break;
-        }
     }
 
     @Override
