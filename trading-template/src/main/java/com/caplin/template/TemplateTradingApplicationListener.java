@@ -1,8 +1,10 @@
 package com.caplin.template;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.caplin.datasource.DataSource;
 import com.caplin.trading.*;
 
 class TemplateTradingApplicationListener implements TradingApplicationListener {
@@ -10,8 +12,16 @@ class TemplateTradingApplicationListener implements TradingApplicationListener {
     private final Logger logger;
     private TemplateTradeChannelListener tradeChannelListener;
 
-    public TemplateTradingApplicationListener(Logger logger) {
-        this.logger = logger;
+    public TemplateTradingApplicationListener(DataSource dataSource) throws IOException {
+        this.logger = dataSource.getLogger();
+
+        /**
+         * This is how the trading library is initialised. We pass in a DataSource instance,
+         * which is used to receive requests, discards and contributions from Liberator, and
+         * a TradingApplicationListener for the trading library to notify of events. It is not
+         * necessary to keep a reference to this object after you instantiate it.
+         */
+        new TradingProvider(this, dataSource);
     }
 
     @Override
