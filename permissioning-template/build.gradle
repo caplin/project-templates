@@ -37,7 +37,7 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.caplin.template.PermissioningTemplate',
+                'Main-Class': 'com.caplin.template.PermissioningAdapter',
                 "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
         )
     }
