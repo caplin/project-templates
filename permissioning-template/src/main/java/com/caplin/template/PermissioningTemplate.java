@@ -28,7 +28,7 @@ public class PermissioningTemplate {
         adminUser.applyPermission(Collections.singleton("/.*"), Constants.DEFAULT_PERMISSION_NAMESPACE, "VIEW", Authorization.ALLOW);
 
         Map<String, String> espTradeFields = Collections.singletonMap("TradingProtocol", "ESP");
-        permsDS.createActionRule("/TEMPLATE/TRADE/%U/FX", espTradeFields, Constants.DEFAULT_PERMISSION_NAMESPACE, "FX-ESP-TRADE", "Instrument");
+        permsDS.createActionRule("/TEMPLATE/TRADE/%U", espTradeFields, Constants.DEFAULT_PERMISSION_NAMESPACE, "FX-ESP-TRADE", "Instrument");
 
         adminUser.applyPermission(Collections.singleton("/.*"), Constants.DEFAULT_PERMISSION_NAMESPACE, "FX-ESP-TRADE", Authorization.ALLOW);
 
