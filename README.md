@@ -4,15 +4,15 @@ The Caplin Project Templates are a set of template projects to help you integrat
 
 This repository includes the following templates:
 
-| Template                                 | Directory                                             |
-|------------------------------------------|-------------------------------------------------------|
-| Pricing Adapter Template                 | [./pricing-template](./pricing-template)              |
-| Trading Adapter Template                 | [./trading-template](./trading-template)              |
-| Permissioning Adapter Template           | [./permissioning-template](./permissioning-template)  |
-| Notification Adapter Template            | [./notification-template](./notification-template)    |
-| Blotter Adapter Template                 | [./blotter-template](./blotter-template)              |
-| Java Transformer Module (Transformer 6)  | [./jtm-legacy-template](./jtm-legacy-template)        |
-| Java Transformer Module (Transformer 7)  | [./jtm-template](./jtm-template)                      |
+| Template                                 | Directory                                                                                   |
+|------------------------------------------|---------------------------------------------------------------------------------------------|
+| Pricing Adapter Template                 | [./pricing-template](./pricing-template#caplin-pricing-adapter-template)                    |
+| Trading Adapter Template                 | [./trading-template](./trading-template#caplin-trading-adapter-template)                    |
+| Permissioning Adapter Template           | [./permissioning-template](./permissioning-template#caplin-permissioning-adapter-template)  |
+| Notification Adapter Template            | [./notification-template](./notification-template#caplin-notification-adapter-template)     |
+| Blotter Adapter Template                 | [./blotter-template](./blotter-template#caplin-blotter-adapter-template)                    |
+| Java Transformer Module (Transformer 6)  | [./jtm-legacy-template](./jtm-legacy-template#caplin-legacy-jtm-template)                   |
+| Java Transformer Module (Transformer 7)  | [./jtm-template](./jtm-template#caplin-jtm-template)                                        |
 
 Each template is a [Gradle](https://gradle.org/) project that comprises:
 
