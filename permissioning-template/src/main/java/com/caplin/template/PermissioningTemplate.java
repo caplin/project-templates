@@ -1,8 +1,7 @@
 package com.caplin.template;
 
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
-import com.caplin.legacydatasrc.monitoring.User;
+import com.caplin.permissioning.User;
 import com.caplin.permissioning.*;
 
 import java.util.Collections;
@@ -37,7 +36,7 @@ public class PermissioningTemplate {
     }
 
     public static void main(String[] args) {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         new PermissioningTemplate(dataSource);
 

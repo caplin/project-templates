@@ -32,7 +32,7 @@ public class ChannelTemplate implements ChannelListener {
         executorService.scheduleAtFixedRate(() -> {
             newChannels.forEach((subject, channel) -> {
 
-                RecordMessage message = channel.createRecordMessage(channel.getSubject());
+                RecordMessage message = channel.createRecordMessage();
                 message.setField(OPERATION_FIELD, "Hello");
                 message.setField(DESCRIPTION_FIELD, "Please send a contrib with the field `operation` set to the value `Ping` to this channel");
                 message.setImage(true);
@@ -60,7 +60,7 @@ public class ChannelTemplate implements ChannelListener {
         logger.log(Level.INFO, "Received message " + recordMessage + " on channel " + recordMessage);
 
         newChannels.remove(channel.getSubject()); //Take channel out of newChannels map so that we don't send the Hello
-        RecordMessage message = channel.createRecordMessage(channel.getSubject());
+        RecordMessage message = channel.createRecordMessage();
 
         if (recordMessage.getField(OPERATION_FIELD).equals("Ping")) {
             message.setField(OPERATION_FIELD, "Pong");

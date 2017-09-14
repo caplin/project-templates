@@ -1,7 +1,6 @@
 package com.caplin.template;
 
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
 import com.caplin.template.channel.ChannelTemplate;
 import com.caplin.template.container.ContainerTemplateDataProvider;
 import com.caplin.template.pricing.PricingTemplateDataProvider;
@@ -28,7 +27,7 @@ public class PricingAdapterTemplate {
     }
 
     public static void main(String[] args) {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         PricingAdapterTemplate pricingAdapterTemplate = new PricingAdapterTemplate(dataSource);
         pricingAdapterTemplate.initialise();
