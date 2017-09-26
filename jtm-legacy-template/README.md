@@ -33,16 +33,17 @@ Follow the instructions below to create a new Transformer module project based o
 
 1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
 
-    * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyTransformerModule/lib` directory:
-
-        * <code>TransformerModule-<em>version</em>.jar</code>
-
     * **Caplin Software Repository**: create the file `~/src/MyTransformerModule/gradle.properties`, and assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
     
         ```
         caplinNexusUser=<username>
         caplinNexusSecret=<password>
         ```
+
+    * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyTransformerModule/lib` directory:
+
+        * <code>TransformerModule-<em>version</em>.jar</code>
+
 
 1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin software repository (coming soon).
 
