@@ -4,20 +4,80 @@ This project template provides a starting point for writing a Transformer 6 modu
 
 > To create a Transformer 7 module, use the [Caplin JTM Template](https://github.com/caplin/project-templates/tree/master/jtm-template).
 
-The project's build script, `gradle.build`, requires a local installation of [Gradle](https://gradle.org/). Alternatively, you can run the build commands using the provided Gradle Wrapper, `gradlew`. For more information on using a Gradle Wrapper, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
+This template is a [Gradle](https://gradle.org/) project. To avoid compatibility issues between the version of Gradle required by the project and the version of Gradle installed on your system, always run the project's Gradle tasks using the Gradle Wrapper from the root of the project: <code>./gradlew <em>task</em></code>
+
+**Note**: the Gradle Wrapper requires an Internet connection. For more information, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
 
 
 ## Getting started
 
-Follow the instructions below to download and configure a Legacy JTM Template:
+Follow the instructions below to create a new Transformer module project based on the Legacy JTM Template.
 
-1. Download or clone the Caplin Project Templates repository.
+### Copy and customise the template
 
-1. In the `jtm-legacy-template/settings.gradle` file, change the value of the `rootProject.name` property to the name of your adapter project. The project name will be used as the name for the [service blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Service-blade).
+1. Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
-1. In the `jtm-legacy-template/build.gradle` file, change the username and password to your Caplin credentials.
+    * `wget http://github.com/caplin/project-templates/archive/master.zip`
 
-This project template does not include the libraries required to build the project. These libraries are downloaded when you build the adapter for the first time, or when you import the template directory to an IDE with Gradle support.
+        `unzip -qoa master.zip`
+
+    * `git clone https://github.com/caplin/project-templates.git`
+
+1. Copy the template directory `jtm-legacy-template` and rename it to the name of your new project (for example, MyTransformerModule):
+
+    ```bash
+    cp -r ./jtm-legacy-template ~/src/MyTransformerModule
+    ```
+
+1. Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
+
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
+
+    * **Caplin Software Repository**: create the file `~/src/MyTransformerModule/gradle.properties`, and assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
+    
+        ```
+        caplinNexusUser=<username>
+        caplinNexusSecret=<password>
+        ```
+
+    * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyTransformerModule/lib` directory:
+
+        * <code>TransformerModule-<em>version</em>.jar</code>
+
+
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin software repository (coming soon).
+
+    * **Manual download**: copy the latest versions of the following Caplin software libraries to the `~/src/MyTransformerModule/lib` directory:
+
+        * <code>TransformerModule-<em>version</em>.jar</code>
+
+    * **Caplin software repository**: (coming soon.) Edit the file `~/src/MyTransformerModule/build.gradle`, and supply the credentials to your Caplin account in the `repositories` section.
+
+### Import your new project into an IDE
+Follow the instructions below to import your new adapter project into Eclipse or IntelliJ IDEA.
+
+#### Eclipse
+These instructions require the Buildship Gradle Integration plugin. To install the plugin, click **Help > Eclipse Marketplace** and search for `Buildship`.
+
+To import your project into Eclipse, follow the steps below:
+
+1. In Eclipse, click **File > Import**. The Import dialog appears.
+
+1. Click **Existing Gradle Project**. The Import Gradle Project dialog appears.
+
+1. Under **Project location**, deselect **Use default location**.
+
+1. In the **Location** field, select your adapter's project directory: `~/src/MyTransformerModule`
+
+1. Click **Finish**.
+
+#### IntelliJ IDEA
+
+To import your project into IntelliJ IDEA, follow the steps below:
+
+1. Click **File > New > Project from existing sources**
+
+1. Select the project's Gradle build file: `~/src/MyTransformerModule/build.gradle`
 
 
 ## Running your JTM during development
@@ -25,7 +85,7 @@ A Java Transformer Module (JTM) can be run only within Transformer's embedded JV
 
 **To setup remote debugging:**
 
-1. In the Deployment Framework file `global_config/overrides/servers/Transformer/java.conf`, set the configuration item `TRANSFORMER_JVM_DEBUGGER_PORT` to a valid port number.
+1. In the Deployment Framework file `global_config/overrides/servers/Transformer/etc/java.conf`, set the configuration item `TRANSFORMER_JVM_DEBUGGER_PORT` to a valid port number.
 
     **Note**: if your Transformer is on a remote server, check that the server's firewall does not block the port number you assign to `TRANSFORMER_JVM_DEBUGGER_PORT`.
 
@@ -39,7 +99,7 @@ A Java Transformer Module (JTM) can be run only within Transformer's embedded JV
 
 **To deploy your JTM:**
 
-1. From the `project-templates/jtm-legacy-template` directory, run the command `gradle assemble`. This command packages your JTM within a new [service blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Service-blade) under the `build` directory.
+1. From the root of your project, run the command `./gradlew assemble`. This command packages your JTM within a new [service blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Service-blade) under the `build` directory.
 
 1. Deploy the service blade to the DFW that hosts your Transformer. For instructions on how to deploy an adapter blade to a DFW, see [Deploy a custom blade](https://caplinportal.caplin.com/developer/component/deployment-framework/how-can-i/cdf-deploy-a-custom-blade).
 
@@ -51,7 +111,7 @@ A Java Transformer Module (JTM) can be run only within Transformer's embedded JV
 
 Follow the steps below to deploy your service blade:
 
-1. From the `project-templates/jtm-legacy-template` directory, run the command `gradle assemble`. This command packages your JTM within a new [service blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Service-blade) under the `build` directory.
+1. From the root of your project, run the command `./gradlew assemble`. This command packages your JTM within a new [service blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Service-blade) under the `build` directory.
 
 1. Deploy the service blade to each DFW in your deployment infrastructue. For instructions on how to deploy an adapter blade to a DFW, see [Deploy a custom blade](https://caplinportal.caplin.com/developer/component/deployment-framework/how-can-i/cdf-deploy-a-custom-blade).
 

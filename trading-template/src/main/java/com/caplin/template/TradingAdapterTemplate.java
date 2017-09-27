@@ -1,7 +1,6 @@
 package com.caplin.template;
 
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
 import com.caplin.trading.*;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class TradingAdapterTemplate {
     }
 
     public static void main(String[] args) throws IOException {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         new TradingAdapterTemplate(dataSource);
 

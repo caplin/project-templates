@@ -12,21 +12,27 @@ ext {
     replacements = [
             adapterName: adapterName,
     ]
-
 }
 
 version = major + "." + minor + "." + patch
 
-
 repositories {
+    flatDir {
+        dirs 'lib'
+    }
     mavenCentral()
-
-    // Your repository here
+    maven {
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "https://repository.caplin.com"
+    }
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
-    compile(group: 'com.caplin.platform.components.permissioning', name: 'permissioning-datasource', version: '6.2.+', classifier: 'jar-with-dependencies') { transitive = false }
+    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
+    compile(group: 'com.caplin.platform.integration.java', name: 'permissioning-datasource', version: '7.0.+')
 }
 
 jar {
@@ -37,7 +43,6 @@ jar {
         )
     }
 }
-
 
 task createKit(type: Zip, dependsOn: jar) {
     archiveName = adapterName + "-" + version + ".zip"

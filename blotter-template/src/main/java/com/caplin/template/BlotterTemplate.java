@@ -1,7 +1,6 @@
 package com.caplin.template;
 
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
 import com.caplin.datasource.blotter.BlotterConfiguration;
 import com.caplin.datasource.blotter.BlotterProvider;
 import com.caplin.template.blotter.BlotterUpdateGenerator;
@@ -26,7 +25,7 @@ public class BlotterTemplate
 
     public static void main(String[] args) throws Exception
     {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         new BlotterTemplate(dataSource);
 

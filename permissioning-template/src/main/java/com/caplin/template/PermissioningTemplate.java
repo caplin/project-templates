@@ -1,7 +1,7 @@
 package com.caplin.template;
 
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
+import com.caplin.permissioning.User;
 import com.caplin.permissioning.*;
 
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class PermissioningTemplate {
         adminUser.applyPermission(Collections.singleton("/.*"), Constants.DEFAULT_PERMISSION_NAMESPACE, "VIEW", Authorization.ALLOW);
 
         Map<String, String> espTradeFields = Collections.singletonMap("TradingProtocol", "ESP");
-        permsDS.createActionRule("/PRIVATE/%U/TRADE/FX", espTradeFields, Constants.DEFAULT_PERMISSION_NAMESPACE, "FX-ESP-TRADE", "Instrument");
+        permsDS.createActionRule("/TEMPLATE/TRADE/%U", espTradeFields, Constants.DEFAULT_PERMISSION_NAMESPACE, "FX-ESP-TRADE", "Instrument");
 
         adminUser.applyPermission(Collections.singleton("/.*"), Constants.DEFAULT_PERMISSION_NAMESPACE, "FX-ESP-TRADE", Authorization.ALLOW);
 
@@ -36,7 +36,7 @@ public class PermissioningTemplate {
     }
 
     public static void main(String[] args) {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         new PermissioningTemplate(dataSource);
 

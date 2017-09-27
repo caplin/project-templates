@@ -16,15 +16,22 @@ ext {
 
 version = major + "." + minor + "." + patch
 
-
 repositories {
+    flatDir {
+        dirs 'lib'
+    }
     mavenCentral()
-
-    // Your repository here
+    maven {
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "https://repository.caplin.com"
+    }
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
+    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
 }
 
 jar {
@@ -35,7 +42,6 @@ jar {
         )
     }
 }
-
 
 task createKit(type: Zip, dependsOn: jar) {
     archiveName = adapterName + "-" + version + ".zip"
@@ -73,6 +79,7 @@ task setupWorkingDirectory(type: Copy) {
         exclude 'blade_config/bootstrap.conf'
         exclude 'DataSource/bin'
         exclude 'Liberator'
+        exclude 'Transformer'
     }
     into("${buildDir}/env")
 }
@@ -84,8 +91,9 @@ task createEnvironmentConfig << {
                      define THIS_LEG                            ${thisLeg}
                      define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
                      define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}
+                     define TRANSFORMER${thisLeg}_HOST          ${(project.hasProperty("transformerHost") ? project.transformerHost : "localhost")}
+                     define TRANSFORMER${thisLeg}_DATASRCPORT   ${(project.hasProperty("transformerDsPort") ? project.transformerDsPort : "15002")}
                      """.stripIndent()
-
 
     new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/").mkdirs()
     new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/environment-ide.conf").text=content

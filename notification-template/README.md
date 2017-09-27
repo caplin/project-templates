@@ -2,22 +2,74 @@
 
 This project provides a starting point for writing notification integration adapters based on Caplin's Java [DataSource API](http://www.caplin.com/developer/component/datasource) and Caplin's [Notification API](https://www.caplin.com/developer/api/cis/latest?com/caplin/datasource/notification).
 
-The build script, `gradle.build`, requires a local installation of [Gradle](https://gradle.org/). Alternatively, you can run the build commands using the provided Gradle Wrapper, `gradlew`. For more information on using a Gradle Wrapper, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
+This template is a [Gradle](https://gradle.org/) project. To avoid compatibility issues between the version of Gradle required by the project and the version of Gradle installed on your system, always run the project's Gradle tasks using the Gradle Wrapper from the root of the project: <code>./gradlew <em>task</em></code>
+
+**Note**: the Gradle Wrapper requires an Internet connection. For more information, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
 
 
 ## Getting started
 
-Follow the instructions below to download and configure a Notification Adapter Template.
+Follow the instructions below to create a new adapter project based on the Notification Adapter Template.
 
-1. Download or clone the Caplin Project Templates repository.
 
-1. In the `notification-template/settings.gradle` file, change the value of the `rootProject.name` property to the name of your adapter project. The project name will be used as the name for the [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade).
+1. Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
-1. In the `notification-template/build.gradle` file, change the username and password to your Caplin credentials.
+### Copy and customise the template
+    * `wget http://github.com/caplin/project-templates/archive/master.zip`
 
-1. Deploy the Caplin Alerts Service to your deployment infrastructure. For more information, see [Installing the Alerts Service](http://www.caplin.com/developer/component/transformer/getting-started/transformer-installing-the-alerts-service).
+        `unzip -qoa master.zip`
 
-The Notification Adapter Template does not include the libraries required to build a Caplin Platform adapter. These libraries are downloaded when you build the adapter for the first time or when you import the template directory to an IDE with Gradle support.
+    * `git clone https://github.com/caplin/project-templates.git`
+
+1. Copy the template directory `notification-template` and rename it to the name of your new project (for example, MyNotificationAdapter):
+
+    ```bash
+    cp -r ./notification-template ~/src/MyNotificationAdapter
+    ```
+
+1. Edit the file `~/src/MyNotificationAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyNotificationAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade), the project name will be used as the name for the blade.
+
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
+
+    * **Caplin Software Repository**: create the file `~/src/MyNotificationAdapter/gradle.properties`, and assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
+    
+        ```
+        caplinNexusUser=<username>
+        caplinNexusSecret=<password>
+        ```
+
+    * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyNotificationAdapter/lib` directory:
+
+        * <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        
+        * <code>NotificationJava-<em>version</em>.jar</code>
+
+
+### Import your new project into an IDE
+Follow the instructions below to import your new adapter project into Eclipse or IntelliJ IDEA.
+
+#### Eclipse
+These instructions require the Buildship Gradle Integration plugin. To install the plugin, click **Help > Eclipse Marketplace** and search for `Buildship`.
+
+To import your project into Eclipse, follow the steps below:
+
+1. In Eclipse, click **File > Import**. The Import dialog appears.
+
+1. Click **Existing Gradle Project**. The Import Gradle Project dialog appears.
+
+1. Under **Project location**, deselect **Use default location**.
+
+1. In the **Location** field, select your adapter's project directory: `~/src/MyNotificationAdapter`
+
+1. Click **Finish**.
+
+#### IntelliJ IDEA
+
+To import your project into IntelliJ IDEA, follow the steps below:
+
+1. Click **File > New > Project from existing sources**
+
+1. Select the project's Gradle build file: `~/src/MyNotificationAdapter/build.gradle`
 
 
 ## Running your adapter within an IDE
@@ -33,7 +85,7 @@ This section describes how to connect an adapter in an IDE to a Liberator or Tra
 
 To provide Liberator or Transformer with your adapter's configuration, follow the steps below:
 
-1. From the notification template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
+1. From the root of your project, run `./gradlew assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
 
 1. Copy the config-only blade to the `kits` directory of your local DFW.
 
@@ -47,9 +99,13 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. In your IDE, create a run configuration for the main class of your project:
 
-    1. Set the run configuration's working directory to <code><em>dfw_location</em>/activate_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
+    1. Set the run configuration's working directory to <code><em>dfw_location</em>/active_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
+    
+        **Note**: on Microsoft Windows, which does not recognise Unix-style symbolic links, use the path <code><em>dfw_location</em>\\kits\\<em>adapter_name</em>\\<em>adapter_name-version</em>\\DataSource</code>
 
     1. Create a run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to.
+    
+        **Note**: the value of `CONFIG_BASE` must end with a trailing slash.
 
 1. Run the adapter using the new run configuration.
 
@@ -60,7 +116,7 @@ This section describes how to connect an adapter in an IDE to a Liberator or Tra
 
 To provide Liberator or Transformer with your adapter's configuration, follow the steps below:
 
-1. From the notification template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
+1. From the root of your project, run `./gradlew assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
 
 1. Copy the config-only blade to the `kits` directory of the remote DFW.
 
@@ -68,11 +124,9 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 1. From the root of the remote DFW, run the command `./dfw versions` to confirm that the config blade has been deployed.
 
-**Note**: if you change your adapter's configuration, you must repeat the steps above.
-
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
-1. From the notification template root, run `gradle setupWorkingDirectory`, specifying one or more of the properties listed below.
+1. From the root of your project, run `./gradlew setupWorkingDirectory`, specifying one or more of the properties listed below.
 
     The `setupWorkingDirectory` task creates a minimal execution environment for your adapter under `build/env`. The environment includes a working directory and the minimal configuration required to connect to the remote Liberator or Transformer.
 
@@ -94,12 +148,14 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. Run the adapter using the new run configuration.
 
+**Note**: if you change your adapter's configuration, you must repeat the steps above.
+
 
 ## Setting JVM options
 
 To pass options to the Java virtual machine (JVM) that runs your adapter in your IDE, add the JVM options to the adapter's run configuration.
 
-To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `notification-template/blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
+To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
 
 ```bash
 if [ $confreading = 1 ]; then
@@ -123,7 +179,7 @@ java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLAD
 
 Follow the steps below to build and deploy your adapter.
 
-1. From the root of the project template, run `gradle assemble`. This command packages your adapter in an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade) under `build/distributions/`.
+1. From the root of your project, run `./gradlew assemble`. This command packages your adapter in an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade) under `build/distributions/`.
 
 1. Deploy the adapter blade to each Deployment Framework in your deployment infrastructure. For instructions on how to deploy an adapter blade to a Deployment Framework, see [Deploy a custom blade](https://caplinportal.caplin.com/developer/component/deployment-framework/how-can-i/cdf-deploy-a-custom-blade).
 

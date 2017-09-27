@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class TemplateNotificationPublisher {
     private NotificationProvider notificationProvider;
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private List<String> usernames = Arrays.asList("user1@caplin.com", "user2@caplin.com");
+    private List<String> usernames = Arrays.asList("admin", "user1", "user2");
 
     public TemplateNotificationPublisher(NotificationProvider notificationProvider, Logger logger) {
         this.notificationProvider = notificationProvider;

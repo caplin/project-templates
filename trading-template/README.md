@@ -2,20 +2,78 @@
 
 This project provides a starting point for writing trading integration adapters based on Caplin's Java [DataSource API](http://www.caplin.com/developer/component/datasource) and Caplin's Java [Trading DataSource API](http://www.caplin.com/developer/api/cis/latest/?com/caplin/trading/package-summary.html).
 
-The build script, `gradle.build`, requires a local installation of [Gradle](https://gradle.org/). Alternatively, you can run the build commands using the provided Gradle Wrapper, `gradlew`. For more information on using a Gradle Wrapper, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
+This template is a [Gradle](https://gradle.org/) project. To avoid compatibility issues between the version of Gradle required by the project and the version of Gradle installed on your system, always run the project's Gradle tasks using the Gradle Wrapper from the root of the project: <code>./gradlew <em>task</em></code>
+
+**Note**: the Gradle Wrapper requires an Internet connection. For more information, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
 
 
 ## Getting started
 
-Follow the instructions below to download and configure a Trading Adapter Template.
+Follow the instructions below to create a new adapter project based on the Trading Adapter Template.
 
-1. Download or clone the Caplin Project Templates repository.
+### Copy and customise the template
 
-1. In the `trading-template/settings.gradle` file, change the value of the `rootProject.name` property to the name of your adapter project. The project name will be used as the name for the [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade).
+1. Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
-1. In the `trading-template/build.gradle` file, change the username and password to your Caplin credentials.
+    * `wget http://github.com/caplin/project-templates/archive/master.zip`
 
-The Trading Adapter Template does not include the libraries required to build a Caplin Platform adapter. These libraries are downloaded when you build the adapter for the first time or when you import the template directory to an IDE with Gradle support.
+        `unzip -qoa master.zip`
+
+    * `git clone https://github.com/caplin/project-templates.git`
+
+1. Copy the template directory `trading-template` and rename it to the name of your new project (for example, MyTradingAdapter):
+
+    ```bash
+    cp -r ./trading-template ~/src/MyTradingAdapter
+    ```
+
+1. Edit the file `~/src/MyTradingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyTradingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade), the project name will be used as the name for the blade.
+
+1. Edit the file `~/src/MyPricingAdapter/blade/blade_config/bootstrap.conf`. Set the value of the configuration variable `ROUTE_VIA_TRANSFORMER` to `TRUE` (default) to configure Liberator to route requests to the adapter via Transformer or `FALSE` to configure Liberator to route requests directly to the adapter.
+
+    **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
+
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
+
+    * **Caplin Software Repository**: create the file `~/src/MyTradingAdapter/gradle.properties`, and assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
+    
+        ```
+        caplinNexusUser=<username>
+        caplinNexusSecret=<password>
+        ```
+
+    * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyTradingAdapter/lib` directory:
+
+        * <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        
+        * <code>trading-datasource-<em>version</em>.jar</code>
+
+
+### Import your new project into an IDE
+Follow the instructions below to import your new adapter project into Eclipse or IntelliJ IDEA.
+
+#### Eclipse
+These instructions require the Buildship Gradle Integration plugin. To install the plugin, click **Help > Eclipse Marketplace** and search for `Buildship`.
+
+To import your project into Eclipse, follow the steps below:
+
+1. In Eclipse, click **File > Import**. The Import dialog appears.
+
+1. Click **Existing Gradle Project**. The Import Gradle Project dialog appears.
+
+1. Under **Project location**, deselect **Use default location**.
+
+1. In the **Location** field, select your adapter's project directory: `~/src/MyTradingAdapter`
+
+1. Click **Finish**.
+
+#### IntelliJ IDEA
+
+To import your project into IntelliJ IDEA, follow the steps below:
+
+1. Click **File > New > Project from existing sources**
+
+1. Select the project's Gradle build file: `~/src/MyTradingAdapter/build.gradle`
 
 
 ## Running your adapter within an IDE
@@ -31,7 +89,7 @@ This section describes how to connect an adapter in an IDE to a Liberator or Tra
 
 To provide Liberator or Transformer with your adapter's configuration, follow the steps below:
 
-1. From the trading template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
+1. From the root of your project, run `./gradlew assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
 
 1. Copy the config-only blade to the `kits` directory of your local DFW.
 
@@ -45,9 +103,15 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. In your IDE, create a run configuration for the main class of your project:
 
-    1. Set the run configuration's working directory to <code><em>dfw_location</em>/activate_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
+    1. Set the run configuration's working directory to <code><em>dfw_location</em>/active_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
+    
+        **Note**: on Microsoft Windows, which does not recognise Unix-style symbolic links, use the path <code><em>dfw_location</em>\\kits\\<em>adapter_name</em>\\<em>adapter_name-version</em>\\DataSource</code>
 
     1. Create a run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to.
+    
+        **Note**: the value of `CONFIG_BASE` must end with a trailing slash.
+
+    1. Add a command line argument: `--trading-property-file=etc/trading-provider.properties`
 
 1. Run the adapter using the new run configuration.
 
@@ -58,7 +122,7 @@ This section describes how to connect an adapter in an IDE to a Liberator or Tra
 
 To provide Liberator or Transformer with your adapter's configuration, follow the steps below:
 
-1. From the trading template root, run `gradle assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
+1. From the root of your project, run `./gradlew assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Config-blade) under `build/distributions/`.
 
 1. Copy the config-only blade to the `kits` directory of the remote DFW.
 
@@ -66,11 +130,9 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 1. From the root of the remote DFW, run the command `./dfw versions` to confirm that the config blade has been deployed.
 
-**Note**: if you change your adapter's configuration, you must repeat the steps above.
-
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
-1. From the trading template root, run `gradle setupWorkingDirectory`, specifying one or more of the properties listed below.
+1. From the root of your project, run `./gradlew setupWorkingDirectory`, specifying one or more of the properties listed below.
 
     The `setupWorkingDirectory` task creates a minimal execution environment for your adapter under `build/env`. The environment includes a working directory and the minimal configuration required to connect to the remote Liberator or Transformer.
 
@@ -88,10 +150,15 @@ To provide your adapter with a working directory and the configuration of the Li
 
 1. Open the generated configuration file `build/env/blade_config/environment-ide.conf` and check that the configuration has been generated correctly. Make manual corrections to the file as required.
 
-1. In your IDE, create a run configuration with the working directory set to `build/env/DataSource`.
+1. In your IDE, create a run configuration for the main class of your project:
+
+     1. Set the run configuration's working directory to `build/env/DataSource`
+
+     1. Add a command line argument: `--trading-property-file=etc/trading-provider.properties`
 
 1. Run the adapter using the new run configuration.
 
+**Note**: if you change your adapter's configuration, you must repeat the steps above.
 
 ### Testing the adapter
 The template includes a simplistic, example trade model in the file `DataSource/etc/trademodels.xml`:
@@ -119,25 +186,32 @@ Once the adapter has started and is connected to Liberator, follow the steps bel
 
     The trading adapter receives a `Trade created` event and returns an empty record.
 
-3. Send a contrib with fields `{ MsgType=Open, TradingProtocol=ESP, RequestID=1, Price=1.234 }` to the subject `/TEMPLATE/TRADE`.
+3. Create and send a new contribution to the subject `/TEMPLATE/TRADE`. Include the following field-value pairs in the contribution:
 
-    On receiving the contrib containing the trigger `Open`, the trading library transitions from state `Initial` to state `Executing`. For the sake of simplicity, and because the example adapter is not connected to a backend trading system, the example adapter assumes that the trade completes immediately and successfully.
+    ```
+    MsgType=Open
+    TradingProtocol=ESP
+    RequestID=1
+    Price=1.234
+    ```
 
-    The adapter returns a `Confirm` message that completes the trade.
+    For instructions on how to create a contribution, see [Using Liberator Explorer to Request and Send Data](https://www.caplin.com/developer/component/liberator/how-can-i/liberator-use-liberator-explorer-to-request-and-send-data#Publishing-data-contributions).
+
+    On receiving the contribution, the trading library transitions from state `Initial` to state `Executing`. The example adapter assumes that the trade completes successfully and immediately returns a `Confirm` message.
 
 
 ## Setting JVM options
 
 To pass options to the Java virtual machine (JVM) that runs your adapter in your IDE, add the JVM options to the adapter's run configuration.
 
-To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `trading-template/blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
+To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
 
 ```bash
 if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   java -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+   java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
    echo $!
 fi
 ```
@@ -145,7 +219,7 @@ fi
 For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
 
 ```bash
-java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1 &
+java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
 ```
 
 **Note**: The JVM heap sizes in this example are illustrative only. Profile your adapter to determine the optimal values for your use cases.
@@ -155,7 +229,7 @@ java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java-$BLADE
 
 Follow the steps below to build and deploy your adapter.
 
-1. From the root of the project template, run `gradle assemble`. This command packages your adapter in an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade) under `build/distributions/`.
+1. From the root of your project, run `./gradlew assemble`. This command packages your adapter in an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade) under `build/distributions/`.
 
 1. Deploy the adapter blade to each Deployment Framework in your deployment infrastructure. For instructions on how to deploy an adapter blade to a Deployment Framework, see [Deploy a custom blade](https://caplinportal.caplin.com/developer/component/deployment-framework/how-can-i/cdf-deploy-a-custom-blade).
 
