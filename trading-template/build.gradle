@@ -16,16 +16,18 @@ ext {
 
 version = major + "." + minor + "." + patch
 
+
 repositories {
     flatDir {
         dirs 'lib'
     }
+    mavenCentral()
 //    maven {
 //        credentials {
 //            username "$caplinNexusUser"
 //            password "$caplinNexusSecret"
 //        }
-//        url "http://nexus.caplin.com:8081/caplin-release"
+//        url "https://repository.caplin.com"
 //    }
 }
 
