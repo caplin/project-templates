@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components', name: 'TransformerModule', version: '6.2.+') { transitive = false }
+    compile(group: 'com.caplin.platform.components', name: 'TransformerModule', version: '7.0.+')
 }
 
 jar {

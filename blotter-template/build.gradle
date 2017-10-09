@@ -30,8 +30,8 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
-    compile(group: 'com.caplin.cis.java.datasource', name: 'BlotterJava', version: '6.2.+') {transitive = false}
+    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
+    compile(group: 'com.caplin.platform.integration.java', name: 'blotter', version: '7.0.+')
 }
 
 jar {

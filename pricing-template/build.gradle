@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-   compile(group: 'com.caplin.platform.components.datasource', name: 'datasource-java', version: '6.2.+') { transitive = false }
+    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
    //compile(name: 'SimpleFXMessenger', version: '0.0.+')
 }
 
