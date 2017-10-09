@@ -23,7 +23,7 @@ public class NotificationTemplate {
     }
 
     public static void main(String[] args) {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         new NotificationTemplate(dataSource);
 

@@ -30,7 +30,7 @@ public class TradingAdapter implements ConnectionListener{
     }
 
     public static void main(String[] args) throws IOException {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         new TradingAdapter(dataSource);
 

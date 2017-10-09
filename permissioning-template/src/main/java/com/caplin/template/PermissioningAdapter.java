@@ -27,7 +27,7 @@ public class PermissioningAdapter implements ConnectionListener {
 	}
 
 	public static void main(String[] args) throws Exception {
-		DataSource dataSource = DataSourceFactory.createDataSource(args);
+		DataSource dataSource = DataSource.fromArgs(args);
 		new PermissioningAdapter(dataSource);
 		dataSource.start();
 	}

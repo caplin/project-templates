@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import com.caplin.datasource.ConnectionListener;
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
 import com.caplin.datasource.PeerStatusEvent;
 import com.caplin.template.pricing.PricingDataProvider;
 
@@ -28,7 +27,7 @@ public class PricingAdapter implements ConnectionListener{
     }
 
     public static void main(String[] args) {
-        DataSource dataSource = DataSourceFactory.createDataSource(args);
+        DataSource dataSource = DataSource.fromArgs(args);
 
         PricingAdapter pricingAdapter = new PricingAdapter(dataSource);
         pricingAdapter.initialise();
