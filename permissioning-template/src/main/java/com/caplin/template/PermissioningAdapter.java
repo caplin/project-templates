@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import com.caplin.datasource.ConnectionListener;
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
 import com.caplin.datasource.PeerStatusEvent;
 
 public class PermissioningAdapter implements ConnectionListener {

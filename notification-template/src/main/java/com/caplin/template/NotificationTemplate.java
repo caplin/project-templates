@@ -1,7 +1,6 @@
 package com.caplin.template;
 
 import com.caplin.datasource.DataSource;
-import com.caplin.datasource.DataSourceFactory;
 import com.caplin.datasource.notification.NotificationApplicationListener;
 import com.caplin.datasource.notification.NotificationConfiguration;
 import com.caplin.datasource.notification.NotificationProvider;
