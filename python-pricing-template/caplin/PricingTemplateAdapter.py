@@ -1,8 +1,8 @@
 import sys
 import caplin.datasrc as ds
 
-from caplin.pricingtemplate.container import ContainerTemplateProvider
-from caplin.pricingtemplate.pricing import PricingTemplateProvider
+from pricingtemplate.container import ContainerTemplateProvider
+from pricingtemplate.pricing import PricingTemplateProvider
 
 
 def main():
@@ -16,3 +16,5 @@ def main():
 
     ds.start()
 
+if __name__ == "__main__":
+    main()

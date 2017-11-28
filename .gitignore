@@ -9,3 +9,5 @@ build/
 *.pyc
 */dist/
 *.egg-info
+**/var/*.pid
+**/var/*.log

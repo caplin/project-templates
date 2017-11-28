@@ -1,2 +1,2 @@
 --extra-index-url https://artifactory.caplin.com/api/pypi/pipy-ci/simple
-caplin.datasource>=9.9.0
+caplin-datasource==9.9.0
