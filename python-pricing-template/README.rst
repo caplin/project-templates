@@ -1,4 +1,4 @@
 Caplin Pricing Template Python
 ==============================
 
-some text and whatnot
+This is experimental and can not yet be used
