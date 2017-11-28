@@ -5,3 +5,7 @@ build/
 *.ipr
 *.iws
 .DS_Store
+*/out
+*.pyc
+/dist/
+/*.egg-info
