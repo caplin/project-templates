@@ -31,7 +31,7 @@ Follow the instructions below to create a new Transformer module project based o
 
 1. Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
 
-1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository.
 
     * **Caplin Software Repository**: create the file `~/src/MyTransformerModule/gradle.properties`, and assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
     
@@ -42,7 +42,7 @@ Follow the instructions below to create a new Transformer module project based o
 
     * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyTransformerModule/lib` directory:
 
-        * <code>JTM-<em>version</em>.jar</code>
+        * Transformer: <code>JTM-<em>version</em>.jar</code> inside <code>Transformer-<em>version</em>-<em>arch</em>.<em>extension</em></code>
 
 
 ### Import your new project into an IDE

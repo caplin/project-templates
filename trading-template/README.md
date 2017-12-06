@@ -33,7 +33,7 @@ Follow the instructions below to create a new adapter project based on the Tradi
 
     **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
 
-1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository.
 
     * **Caplin Software Repository**: create the file `~/src/MyTradingAdapter/gradle.properties`, and assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
     
@@ -44,9 +44,9 @@ Follow the instructions below to create a new adapter project based on the Tradi
 
     * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyTradingAdapter/lib` directory:
 
-        * <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        * DataSource for Java: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
         
-        * <code>trading-datasource-<em>version</em>.jar</code>
+        * Java Trading API: <code>trading-datasource-<em>version</em>.jar</code>
 
 
 ### Import your new project into an IDE

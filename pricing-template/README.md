@@ -32,7 +32,7 @@ Follow the instructions below to create a new adapter project based on the Prici
 
     **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
 
-1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository (coming soon).
+1. Supply your project's dependencies manually, or configure Gradle to download them automatically from the Caplin Software Repository.
 
     * **Caplin Software Repository**: create the file `~/src/MyPricingAdapter/gradle.properties`, assign your Caplin username and password to the Gradle properties `caplinNexusUser` and `caplinNexusSecret`:
     
@@ -43,7 +43,7 @@ Follow the instructions below to create a new adapter project based on the Prici
 
     * **Manual download**: visit the [Caplin Download](https://www.caplin.com/developer/downloads) site and download the latest versions of the following Caplin software libraries to the `~/src/MyPricingAdapter/lib` directory:
 
-        * <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        * DataSource for Java: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
 
 
 ### Import your new project into an IDE
