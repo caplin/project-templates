@@ -30,6 +30,8 @@ repositories {
 }
 
 dependencies {
+    //compile fileTree(dir: 'lib', include: '*.jar')
+
     compile(group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+')
 }
 
