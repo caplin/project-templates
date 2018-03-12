@@ -17,9 +17,6 @@ ext {
 version = major + "." + minor + "." + patch
 
 repositories {
-    flatDir {
-        dirs 'lib'
-    }
     maven {
         credentials {
             username "$caplinNexusUser"
