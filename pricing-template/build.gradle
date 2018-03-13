@@ -17,9 +17,6 @@ ext {
 version = major + "." + minor + "." + patch
 
 repositories {
-    flatDir {
-        dirs 'lib'
-    }
     mavenCentral()
     maven {
         credentials {
@@ -31,6 +28,8 @@ repositories {
 }
 
 dependencies {
+    //compile fileTree(dir: 'lib', include: '*.jar')
+
     compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
 }
 
@@ -93,6 +92,8 @@ task createEnvironmentConfig << {
                      define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}
                      define TRANSFORMER${thisLeg}_HOST          ${(project.hasProperty("transformerHost") ? project.transformerHost : "localhost")}
                      define TRANSFORMER${thisLeg}_DATASRCPORT   ${(project.hasProperty("transformerDsPort") ? project.transformerDsPort : "15002")}
+
+                     add-field  CONTRIB_USER    20000
                      """.stripIndent()
 
     new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/").mkdirs()

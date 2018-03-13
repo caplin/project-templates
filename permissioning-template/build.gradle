@@ -17,9 +17,6 @@ ext {
 version = major + "." + minor + "." + patch
 
 repositories {
-    flatDir {
-        dirs 'lib'
-    }
     mavenCentral()
     maven {
         credentials {
@@ -31,6 +28,8 @@ repositories {
 }
 
 dependencies {
+    //compile fileTree(dir: 'lib', include: '*.jar')
+
     compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
     compile(group: 'com.caplin.platform.integration.java', name: 'permissioning-datasource', version: '7.0.+')
 }

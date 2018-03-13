@@ -17,9 +17,6 @@ ext {
 version = major + "." + minor + "." + patch
 
 repositories {
-    flatDir {
-        dirs 'lib'
-    }
     maven {
         credentials {
             username "$caplinNexusUser"
@@ -30,6 +27,8 @@ repositories {
 }
 
 dependencies {
+    //compile fileTree(dir: 'lib', include: '*.jar')
+
     compile(group: 'com.caplin.platform.components', name: 'TransformerModule', version: '7.0.+')
 }
 
