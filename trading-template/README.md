@@ -33,22 +33,44 @@ Follow the instructions below to create a new adapter project based on the Tradi
 
     **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
 
-1.  Choose one of the options below to satisfy the project's dependencies:
+1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
-    *   If you have Internet access to <https://repository.caplin.com> and a Caplin website account, add your Caplin account credentials to your `~/.gradle/gradle.properties` file:
+    1.  In your `~/.gradle/gradle.properties` file (create it if it does not exist), add the following lines, replacing `<username>` and `<password>` with your Caplin credentials:
 
         ```
         caplinNexusUser=<username>
         caplinNexusSecret=<password>
         ```
 
-        Gradle will download the project's dependencies automatically from <https://repository.caplin.com>.
+1.  If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually:
 
-    *   If you don't have Internet access to <https://repository.caplin.com>, copy the following Caplin libraries to the project's `lib` directory:
+    1.  In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
 
-        *   DataSource for Java: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        ```groovy
+        /*maven {
+            credentials {
+                username "$caplinNexusUser"
+                password "$caplinNexusSecret"
+            }
+            url "https://repository.caplin.com"
+        }*/
+        ```
         
-        *   Java Trading API: <code>trading-datasource-<em>version</em>.jar</code>
+    1.  In this project's `build.gradle` file, uncomment the `compile fileTree(...)` line in the `dependencies` block:
+
+        ```groovy
+        dependencies {
+            compile fileTree(dir: 'lib', include: '*.jar')
+
+            ...
+        }
+        ```
+
+    1.  Copy the following Caplin libraries to this project's `lib` directory:
+
+        *   Java DataSource API 7+: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+
+        *   Java Trading API 7+: <code>trading-datasource-<em>version</em>.jar</code>
 
 
 ### Import your new project into an IDE
