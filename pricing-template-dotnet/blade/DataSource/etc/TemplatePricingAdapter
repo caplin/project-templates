@@ -1,0 +1,1140 @@
+#!/bin/bash
+
+######################################################################
+#
+# Caplin Liberator, Transformer and DataSources startup script
+#
+######################################################################
+
+if [[ "$DFW_DEBUG" != "" ]]; then
+   set -x
+fi
+
+bold_red="\033[01;31m"
+end_code="\e[0m"
+
+winpath() {
+    if [ ${#} -eq 0 ]; then
+        : skip
+    elif [ -f "$1" ]; then
+        local dirname=$(dirname "$1")
+        local basename=$(basename "$1")
+        echo "$(cd "$dirname" && pwd -W)/$basename" \
+        | sed \
+          -e 's|/|\/|g';
+    elif [ -d "$1" ]; then
+        echo "$(cd "$1" && pwd -W)" \
+        | sed \
+          -e 's|/|\/|g';
+    else
+        echo "$1" \
+        | sed \
+          -e 's|^/\(.\)/|\1:\/|g' \
+          -e 's|/|\/|g'
+    fi
+}
+
+#
+# Print a string in red.
+#
+print_red()
+{
+   if [[ "$TPUT" = ":" ]]; then
+      printf "$bold_red%s$end_code\n" "$1"
+   else
+      printf "%s%s%s%s\n" "$($TPUT bold)" "$($TPUT setaf 1)" "$1" "$($TPUT sgr0)"
+   fi
+}
+
+#
+# Echo an error message and exit. Colorised the message if we're running in 
+# the Deployment Framework
+#
+# $1 - Message to echo
+# $2 - Exit code
+#
+exit_error()
+{
+   if [[ $deployment_framework = 1 ]]; then
+      print_red "   Error: $1" 1>&2
+   else
+      printf "$1" 1>&2
+   fi
+   echo
+   exit $2
+}
+
+#
+# Write a message to the Framework log file for the blade
+#
+# $1 - Message to log
+# $2 - If this is 1, echo the message as well
+# $3 - If we're echoing the message and a header is required 
+#      it's supplied as $3.
+#
+fw_log()
+{
+   if [[ "$3" != "" ]]; then
+      echo "   $3:"
+      echo
+   fi
+   if [[ $2 = 1 ]]; then
+      print_red "   $1"
+      echo
+   fi
+   timestamp=` date +"%Y/%m/%d-%H:%M:%S %z:"`
+   echo "$timestamp $1" >> "$LOGDIR/framework.log"
+}
+
+sd=`pwd`
+if [[ -z "$DSDK_ROOT" ]]; then
+    DSDK_ROOT=`dirname "$0"`/..
+    cd "$DSDK_ROOT"
+    export DSDK_ROOT=`pwd`
+    cd "$sd"
+fi
+
+if [[ -z "$DSDK_START" ]]; then
+    DSDK_START=start-noloop
+    #DSDK_START=start-loop
+fi
+
+# Set the OpenSSL config file if it's not previous set
+if [[ -z "$OPENSSL_CONF" ]]; then
+    OPENSSL_CONF="$DSDK_ROOT/openssl.cnf"
+    export OPENSSL_CONF
+fi
+
+# Location and options for any preprocessor that you wish to run on
+# the configuration files
+#
+# m4 may be a suitable preprocessor
+if [[ -z "$PREPROCESSOR" ]]; then
+    PREPROCESSOR=
+fi
+
+#OPTIONS=
+
+
+######################################################################
+#
+# Do not change anything under this line
+#
+######################################################################
+
+# Set this early so that DFW builds work
+LD_LIBRARY_PATH=$DSDK_ROOT/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
+# Check for system startup script style name
+if [[ "$DSDK_BASE" = "" ]]; then
+   BASE=`basename "$0" | sed 's/[SK][0-9][0-9]//1'`
+else
+   BASE="$DSDK_BASE"
+fi
+
+# Load up any additional startup that is required for this datasource
+if [[ -f "$DSDK_ROOT/etc/${BASE}_extra.sh" ]]; then
+  . "$DSDK_ROOT/etc/${BASE}_extra.sh"
+fi
+
+APP=`echo "$BASE" | sed 's/-.*//1'`
+
+AWK=awk
+TPUT=tput
+which $TPUT &> /dev/null
+if [[ $? != 0 ]]; then
+   TPUT=:
+fi
+
+#
+# Various Windows stuff
+#  - Create the correct appname for windows
+#  - Get the correct options for ps
+#  - Make sure JAVA_HOME is a Windows path
+#
+iscygwin=0
+needmono=0
+iswindows=0
+WINPATH="cygpath -wm"
+if [[ `uname | grep -n MINGW` ]]; then
+   iswindows=1
+   MY_LD_PRELOAD=""
+   MY_LD_PRELOAD=""
+   PSCMD="ps -eW"
+   NOHUP=""
+   #
+   # Cygwin ping isn't always available.
+   #
+   IFCONFIG_TOOL=ipconfig
+
+   if [[ -f "$DSDK_ROOT/bin/$APP.exe" ]]; then
+      APP=$APP.exe
+   fi
+   PREPROCESSOR=
+   which cygpath > /dev/null 2>&1
+   if [[ $? != 0 ]]; then
+       WINPATH=winpath
+   fi
+   #
+   # Assume JAVA_HOME is in the correct DOS format for Git
+   #
+elif [[ `uname | grep -n CYGWIN` ]]; then
+   iscygwin=1
+   iswindows=1
+
+   MY_LD_PRELOAD=""
+   PSCMD="ps -eW"
+   IFCONFIG_TOOL=ipconfig
+
+   if [[ -f "$DSDK_ROOT/bin/$APP.exe" ]]; then
+      APP=$APP.exe
+   fi
+   PREPROCESSOR=
+   if [[ "$JAVA_HOME" != "" ]]; then
+      export JAVA_HOME=`cygpath -w "$JAVA_HOME"`
+   fi
+else
+   iscygwin=0
+   iswindows=0
+   needmono=0
+   if [[ -f "$DSDK_ROOT/bin/$APP.exe" ]]; then
+      APP=$APP.exe
+      needmono=1
+   fi
+
+   if [[ `uname` = "Linux" ]]; then
+       # Location of JVM library directory. If not specified then java.conf
+       # will be queried to determine its location.
+       # The JVM requires LD_LIBRARY_PATH to be set on Linux for <JDK1.5
+       JVM_LIB_DIR=
+
+       # Linux threading libraries, the version of NPTL supplied with Redhat
+       # distributions based on Kernel 2.4 appears to have some issues, so
+       # on those platforms fallback to using LinuxThreads, this is achieved
+       # using LD_ASSUME_KERNEL (http://people.redhat.com/drepper/assumekernel.html)
+       if [[ "`uname -r| cut -c1-3`" =  "2.4" ]]; then
+           export LD_ASSUME_KERNEL=2.4.19
+       fi
+
+       PSCMD="ps auxm"
+   else
+       MY_LD_PRELOAD_32=/usr/lib/libmtmalloc.so.1:$LD_PRELOAD_32
+       MY_LD_PRELOAD_64=/usr/lib/sparcv9/libmtmalloc.so.1:$LD_PRELOAD_64
+       PSCMD="ps -ef"
+
+       # Deduce (simply) a good version of awk
+       if [[ `uname` = "SunOS" ]]; then
+          AWK=nawk
+       fi
+   fi
+   IFCONFIG_TOOL=ifconfig
+   IP_TOOL=ip
+   IP=`which $IP_TOOL 2> /dev/null`
+fi
+IFCONFIG=`which $IFCONFIG_TOOL 2> /dev/null`
+
+
+if [[ "$DSDK_APP" = "" ]]; then
+   DSDK_APP="$DSDK_ROOT/bin/$APP"
+fi
+
+
+#
+# Find out if we're running as a blade inside a Deployment Framework.
+# If we are set up some useful macros.
+#
+if [[ "`echo $DSDK_ROOT | grep -n active_blades`" != "" ]]; then
+   tabbing="   "
+   deployment_framework=1
+   #
+   # Export the locations used in the DataSource configuraton for blades.
+   #
+   cd "$DSDK_ROOT"
+   if [[ -z $CONFIG_BASE ]]; then
+      if [[ -d "../../../../active_blades" ]]; then
+         export CONFIG_BASE=../../../../global_config/
+      else
+         export CONFIG_BASE=../../../global_config/
+      fi
+   fi
+   export FIELDS_DIR=../../blade_config/
+
+   #
+   # Work out blade name.
+   #
+   cd ..
+   BLADEDIR=`pwd`
+   export BLADENAME=`basename "$BLADEDIR"`
+   INFOSTRING=$BLADENAME
+   CONFREADERNAME=$BLADENAME
+   cd "$sd"
+elif [[ -f "$DSDK_ROOT/../../dfw" ]]; then
+   tabbing="   "
+   if [[ "$BASE" = "rttpd" ]]; then
+      BLADENAME=LIBERATOR
+      INFOSTRING=Liberator
+   elif [[ "$BASE" = "transformer" ]]; then
+      BLADENAME=TRANSFORMER
+      INFOSTRING=Transformer
+   fi
+   export CONFIG_BASE=../../global_config/
+   CONFREADERNAME=$BASE
+   deployment_framework=1
+else
+   #
+   # Not running in the Framework
+   #
+   INFOSTRING=$BASE
+   CONFREADERNAME=$BASE
+   deployment_framework=0
+   if [[ "$LOGDIR" = "" ]]; then
+      echo
+   fi
+fi
+CONFREADER="$DSDK_APP"
+
+if [[ "$1" = "dump" ]]; then
+   if [[ "$2" = "" ]]; then
+      exit_error "${tabbing}Usage: $0 $1 <dump directory>" 1
+   elif [[ ! -e "$2" ]]; then
+      exit_error "${tabbing}$2 does not exist" 1
+   else
+      if [[ "$3" != "" ]]; then
+         export DSDK_CONFIG_DUMP_SAVE=$3
+      else
+         export DSDK_CONFIG_DUMP_SAVE="complete"
+      fi
+      if [[ $iswindows = 1 ]]; then
+         export DSDK_CONFIG_DUMP_DIR_SAVE=`$WINPATH "$2"`
+      else
+         export DSDK_CONFIG_DUMP_DIR_SAVE="$2"
+      fi
+      unset DSDK_CONFIG_DUMP_DIR DSDK_CONFIG_DUMP
+   fi
+else
+   if [[ ! -z $DSDK_CONFIG_DUMP_DIR ]]; then
+      export DSDK_CONFIG_DUMP_DIR_SAVE=$DSDK_CONFIG_DUMP_DIR
+      unset DSDK_CONFIG_DUMP_DIR
+   fi
+   if [[ ! -z $DSDK_CONFIG_DUMP ]]; then
+      export DSDK_CONFIG_DUMP_SAVE=$DSDK_CONFIG_DUMP
+      unset DSDK_CONFIG_DUMP
+   fi
+fi
+
+#
+# Check if file exists and is executable.
+#
+# If we're in a Deployment Framework the kit may not be deployed so if the
+# binary doesn't exist it's not an issue.
+#
+# If the binary exists and isn't executable, it's always an issue.
+#
+if [[ ! -f "$DSDK_APP" ]]; then
+    if [[ $deployment_framework = 0 ]]; then
+       exit_error "$DSDK_APP does not exist" 10
+    else
+       exit 0
+    fi
+elif [[ ! -x "$DSDK_APP" ]]; then
+    if [[ $deployment_framework = 1 ]]; then
+       echo "   $INFOSTRING:"
+    fi
+    exit_error "$DSDK_APP is not executable" 11
+fi
+
+CONFIG_FILE="$DSDK_ROOT/etc/$BASE.conf"
+CONFIG_FILE_BASENAME=`basename "$CONFIG_FILE"`
+
+BASE2=$BASE
+
+if [[ $iswindows = 0 ]]; then
+   export BINARY_ROOT="$DSDK_ROOT"
+else
+   export BINARY_ROOT=`$WINPATH "$DSDK_ROOT"`
+fi
+CONFREADER_OPTIONS="$CONFREADER_OPTIONS -f $CONFIG_FILE_BASENAME -n $CONFREADERNAME"
+
+if [[ "$PREPROCESSOR" != "" ]]; then
+    OPTIONS="$OPTIONS --preprocessor-binary=$PREPROCESSOR"
+    CONFREADER_OPTIONS="$CONFREADER_OPTIONS --preprocessor-binary=$PREPROCESSOR"
+fi
+
+EXECUTOR=""
+if [[ $needmono = 1 ]]; then
+   EXECUTOR=mono
+fi
+
+#
+# Before using the binary for the first time, we need to make sure that Java is on the 
+# path if the binary is in a Java blade.
+#
+if [[ -f "$BINARY_ROOT"/bin/start-jar.sh ]]; then
+   DSDK_JAVA_BLADE=1
+   which java > /dev/null 2>&1
+   if [[ $? != 0 ]]; then
+      echo "   $INFOSTRING:"
+      exit_error "Java is required on the path" 127
+   fi
+fi
+
+#
+# We have to supress stderr when reading config so we don't get license messages.
+# Make sure CONFREADER works before we proceed.
+#
+$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value application-name > /dev/null 2>&1
+ret=$?
+if [[ $ret != 0 ]]; then
+   if [[ $deployment_framework = 1 ]]; then
+      echo "   $INFOSTRING:"
+   fi
+   errortext=`$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value application-name 2>&1`
+   exit_error "$INFOSTRING: Failed trying to read application name
+
+$errortext" $ret
+fi
+
+
+option=$1
+
+#
+# At this point we have everything we need to get config values and macros and we know that the config reader works.
+# Also, change the dump option to start because the environment variables required for the dump are set up.
+#
+case "$option" in
+  dump)
+        option="start"
+        ;;
+  value)
+        shift
+        for parm in $*
+        do
+           "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value $parm 2> /dev/null
+           EXITCODE=$?
+           if [[ $EXITCODE != 0 ]]; then
+               echo "-"
+           fi
+        done
+        exit 0
+        ;;
+
+  macro)
+        shift
+        for parm in $*
+        do
+           "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-macro $parm 2> /dev/null
+           EXITCODE=$?
+           if [[ $EXITCODE != 0 ]]; then
+               echo "-"
+           fi
+        done
+        exit 0
+        ;;
+esac
+
+
+# Check the config file for any application-name settings
+APPNAME=`$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value application-name 2> /dev/null | tr -d '\r'`
+if [[ "$APPNAME" = "" ]]; then
+   if [[ $deployment_framework = 1 ]]; then
+      echo "   $INFOSTRING:"
+   fi
+   exit_error "Couldn't read application name using <$CONFREADER>" 1
+fi 
+
+if [[ "$APPNAME"x != x ]]; then
+   BASE2=$APPNAME
+fi
+export APPNAME
+
+# Now deduce where the pid file will go
+#
+# Use the binary to read the config because it may be a macro. Since this takes a bit of time, don't do it more than once.
+#
+if [[ "$PIDFILE" = "" || "$LOGDIR" = "" ]]; then
+    LOGDIR_CONFIG=`$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value log-dir 2> /dev/null | tr -d '\r'`
+    PIDFILE_CONFIG=`$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value pid-filename 2> /dev/null | tr -d '\r'`
+    export LOGDIR=`echo "$LOGDIR_CONFIG" | $AWK '{gsub( "%u", ENVIRON["USER"]); gsub( "%r", ENVIRON["BINARY_ROOT"]); gsub( "%[a|n]", ENVIRON["APPNAME"]); print }' `
+    #
+    # Have to export LOGDIR here because awk needs it.
+    #
+    PIDFILE=`echo $PIDFILE_CONFIG | $AWK '{gsub( "%u", ENVIRON["USER"]); gsub( "%d", ENVIRON["LOGDIR"]); gsub( "%r", ENVIRON["BINARY_ROOT"]); gsub( "%[a|n]", ENVIRON["APPNAME"]); print }' `
+fi
+
+#
+# Make absolutely sure for Windows that the path has /'s not \s
+#
+if [[ $iswindows = 1 ]]; then
+   export PIDFILE=`$WINPATH "$PIDFILE"`
+   export LOGDIR=`$WINPATH "$LOGDIR"`
+else
+   export LOGDIR
+   export PIDFILE
+fi
+
+PIDFILE_BASENAME=`basename "$PIDFILE"`
+
+if [[ ! -d "$LOGDIR" ]]; then
+   if [[ $deployment_framework = 1 ]]; then
+      echo "   $INFOSTRING:"
+   fi
+   exit_error "$APPNAME logging directory <$LOGDIR> doesn't exist" 127
+fi
+if [[ "$PIDFILE" = "" ]]; then
+   if [[ $deployment_framework = 1 ]]; then
+      echo "   $INFOSTRING:"
+   fi
+   exit_error "$APPNAME no location is configured for the PID file" 127
+fi
+
+#
+# Now we have a LOGDIR. So from this point in the script onwards, we can log to the 
+# framework log using fw_log() if we need to.
+#
+
+#
+# Remove log files
+#
+# $1 - Directory to remove files from
+# $2 - optional 
+#      ""       - remove all log files
+#      "nostop" - remove the log files that are not "in-use"
+#
+_remove_logs()
+{
+    if [[ -z $2 ]]; then
+        nostop=0
+    else
+        nostop=1
+    fi
+    owd=`pwd`
+    if [[ -d "$1" ]]; then
+        # Remove log files
+        cd "$1"
+        if [[ $nostop = 0 ]]; then
+            #
+            # Include the '.' files in the file list
+            #
+            log_files=`\ls -aR`
+        else
+            log_files=`\ls -R`
+        fi
+        for log_file in $log_files
+        do
+            if [[ -f "$log_file" && "$log_file" != "$PIDFILE_BASENAME" ]]; then
+                if [[ $nostop = 0 ]]; then
+                    #
+                    # Not "no-stop" - just remove the file
+                    #
+                    rm -f "$log_file"
+                else
+                    if [[ $iswindows = 1 ]]; then
+                        #
+                        # Windows doesn't have fuser but it won't remove in-use files.
+                        # So we just suppress the error messages for the files we can't remove.
+                        #
+                        rm -f "$log_file" 2> /dev/null
+                    else
+                        $FUSER $log_file > /dev/null 2>&1   
+                        if [[ $? != 0 ]]; then
+                            rm -f "$log_file"
+                        fi
+                    fi
+                fi
+            fi
+        done
+    fi
+    cd "$owd"
+}
+
+#
+# $1 - optional 
+#      ""       - remove all logs files
+#      "nostop" - remove not "in-use" log files
+#
+remove_logs()
+{
+    echo "${tabbing}Cleaning $INFOSTRING:"
+    echo
+    _remove_logs "$LOGDIR" $1
+    if [[ -d "$LOGDIR"/rttp ]]; then
+        _remove_logs "$LOGDIR/rttp" $1
+    fi
+}
+
+remove_logs_nostop()
+{
+    if [[ $iswindows = 0 ]]; then
+        FUSER=`which fuser 2> /dev/null`
+        if [[ -z $FUSER ]]; then
+           FUSER=/sbin/fuser
+           if [[ ! -f $FUSER ]]; then
+               exit_error "$INFOSTRING: Can't find fuser. This command cannot be run." 127
+           fi
+        fi
+        remove_logs nostop
+    fi
+}
+
+#
+# At this point we have everything we need in the environment to do translate.
+# Also we know where the logs and PID file are so we can do clean, veryclean, status
+# Finally we can do some early checks for start and stop
+#
+case "$option" in
+  cleanstart)
+       if [[ -f "$PIDFILE" ]]; then
+          "$0" stop
+       fi
+       remove_logs
+       "$0" start-noloop
+       exit $?
+       ;;
+  clean)
+       if [[ -f "$PIDFILE" ]]; then
+          "$0" stop
+       fi
+       remove_logs
+       exit 0
+       ;;
+  verycleanstart)
+       "$0" veryclean
+       "$0" start-noloop
+       exit $?
+       ;;
+  clean-nostop)
+       remove_logs_nostop
+       exit 0
+       ;;
+  veryclean)
+       if [[ -f "$PIDFILE" ]]; then
+          "$0" stop
+       fi
+       remove_logs
+       #
+       # Remove Liberator users DB files.
+       #
+       if [[ "$BASE" = "rttpd" ]]; then
+          echo "${tabbing}Removing Liberator user files"
+          echo
+          UUPP_CONFIG=`"$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value uupp-qdbm-name 2> /dev/null | tr -d '\r'`
+          UUPPFILE=`echo $UUPP_CONFIG | $AWK '{gsub( "%u", ENVIRON["USER"]); gsub( "%d", ENVIRON["LOGDIR"]); gsub( "%r", ENVIRON["BINARY_ROOT"]); gsub( "%[a|n]", ENVIRON["APPNAME"]); print }' `
+          UUPPFILE=`echo $UUPPFILE | tr '\\\' "/"`
+          UUPP_DIR=`dirname "$UUPPFILE"`
+          if [[ $iswindows = 1 ]]; then
+             export UUPP_DIR=`$WINPATH "$UUPP_DIR"`
+          fi
+
+          rm -f "$UUPP_DIR/"*
+       fi
+       #
+       # Remove Transformer memory file.
+       #
+       if [[ "$BASE" = "transformer" ]]; then
+          echo "${tabbing}Removing Transformer memory files"
+          echo
+          MEMORY_CONFIG=`"$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value memory-file 2> /dev/null | tr -d '\r'`
+          MEMORY_FILE=`echo $MEMORY_CONFIG | $AWK '{gsub( "%u", ENVIRON["USER"]); gsub( "%d", ENVIRON["LOGDIR"]); gsub( "%r", ENVIRON["BINARY_ROOT"]); gsub( "%[a|n]", ENVIRON["APPNAME"]); print }' `
+          MEMORY_FILE=`echo $MEMORY_FILE | tr '\\\' "/"`
+          if [[ $iswindows = 1 ]]; then
+             export MEMORY_FILE=`$WINPATH "$MEMORY_FILE"`
+          fi
+          rm -f "$MEMORY_FILE"
+          rm -f "$MEMORY_FILE".old
+       fi
+
+       exit 0
+       ;;
+  status)
+        binrunning=""
+        if [[ -f "$PIDFILE" ]]; then
+             pid=`cat "$PIDFILE"`
+             if [[ "$pid" != "" ]]; then
+                if [[ $iswindows = 0 ]]; then
+                   binrunning=`ps -p $pid | grep $pid`
+                else
+                   binrunning=`$PSCMD | grep -v grep | $AWK '{print $4}' | grep $pid`
+                fi
+                if [[ "$binrunning" != "" ]]; then
+                   printf "${tabbing}%-30s %-19s%-6s\n" $INFOSTRING "Running" $pid
+                fi
+            fi
+        fi
+        if [[ "$binrunning" = "" ]]; then
+           printf "${tabbing}%-30s %s" $INFOSTRING
+           print_red "Not running"
+        fi
+        if [[ $deployment_framework = 0 ]]; then
+           echo
+        fi
+        if [[ "$binrunning" = "" ]]; then
+            exit 1
+        else
+            exit 0
+        fi
+        ;;
+   translate)
+        if [[ "$2" != "" ]]; then
+           echo "$2" | $AWK '{gsub( "%u", ENVIRON["USER"]); gsub( "%d", ENVIRON["LOGDIR"]); gsub( "%r", ENVIRON["BINARY_ROOT"]); gsub( "%[a|n]", ENVIRON["APPNAME"]); print }'
+        fi
+        exit 0
+        ;;
+   stop)
+        #
+        # Unless the PID file has been manually removed, if it doesn't exist the binary isn't running.
+        #
+        if [[ ! -f "$PIDFILE" ]]; then
+           #
+           # No PID file, nothing to do
+           #
+           exit 0
+        fi
+        ;;
+   start)
+        if [[ ! -f "$PIDFILE" ]]; then
+           #
+           # No PID file, so we don't need to call stop first
+           #
+           option="start-noloop"
+        fi
+        ;;
+esac
+
+# Try to find jvm-location for LD_LIBRARY_PATH
+if [[ `uname` = "Linux" ]]; then
+    if [[ "$JVM_LIB_DIR"x = x ]]; then
+       JVM_LIB_DIR=`echo "$JVM_LOCATION" | sed 's,/libjvm.so,,1' | sed 's,/libjava.so,,1' | tr -d '\r'`
+       LD_LIBRARY_PATH=$JVM_LIB_DIR:$JVM_LIB_DIR/server:$LD_LIBRARY_PATH
+       export LD_LIBRARY_PATH
+       export JVM_LIB_DIR
+    fi
+fi
+
+# Initialise exit code. It is used to store $? from script and app calls.
+EXITCODE=0
+
+case "$option" in
+  start)
+	"$0" stop
+	"$0" $DSDK_START
+        # Save $0 exit code
+        EXITCODE=$?
+	;;
+  restart)
+	"$0" start
+        # Save $0 exit code
+        EXITCODE=$?
+	;;
+  start-noloop)
+        # If there is a core file then rename it to include the timestamp
+        if [[ -f "$DSDK_ROOT/core" ]]; then
+
+            TIMESTAMP=`ls -l "$DSDK_ROOT/core" | $AWK '{print $6 "-" $7 "-" $8}'`
+
+            echo "${tabbing}Renaming "$DSDK_ROOT/core" file to core-$TIMESTAMP"
+            echo
+            
+            /bin/mv -f "$DSDK_ROOT/core" "$DSDK_ROOT/core-$TIMESTAMP"
+
+        fi
+
+        #
+        # If we're running inside a Deployment Framework use the hosts file to decide on whether we start.
+        #
+        if [[ $deployment_framework = 1 ]]; then
+
+           # Work out blade hostname.
+           #
+           LEG=`$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-macro THIS_LEG 2> /dev/null | tr -d '\r'`
+           BLADE_HOSTNAME_MACRO="$BLADENAME$LEG"_HOST
+           BLADE_HOSTNAME=`$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-macro $BLADE_HOSTNAME_MACRO 2> /dev/null | tr -d '\r'`
+
+           #
+           # Check if this blade's DataSource should be running on this host.
+           # Note that we don't echo a warning - just log it. This is normal operation because kits will be deployed to all
+           # FW's.
+           #
+           host_name=`hostname 2> /dev/null`
+           f_host_name=`hostname -f 2> /dev/null`
+           if [[ "$BLADE_HOSTNAME" = "" ]]; then
+               errmsg="Warning: Not starting $INFOSTRING, no hostname defined. Configure the blade host using the ./dfw hosts command."
+               fw_log "$errmsg" 1 $INFOSTRING 1>&2
+               exit 0
+           #
+           # If we're not configured to be the name of the host or to one of the many loopback possibilities, start using
+           # network utilities to see if we should start.
+           #
+           elif [[ "$BLADE_HOSTNAME" != "localhost" && "$BLADE_HOSTNAME" != "$host_name" && "$BLADE_HOSTNAME" != "$f_host_name" && "$BLADE_HOSTNAME" != "127.0.0.1" && "$BLADE_HOSTNAME" != "::1" && "$BLADE_HOSTNAME" != "0:0:0:0:0:0:0:1" ]]; then
+              #
+              # If the tool we need isn't available, complain.
+              #
+              if [[ $iswindows = 0 && -z $IP  && -z $IFCONFIG ]]; then
+                  errmsg="Info: $INFOSTRING runs on $BLADE_HOSTNAME, not starting on $host_name"
+                  fw_log "$errmsg" 0
+                  exit_error "No $IFCONFIG_TOOL or $IP_TOOL tool on path. Can't resolve <$BLADE_HOSTNAME>." 127
+              elif [[ $iswindows = 1 && -z $IFCONFIG ]]; then
+                  errmsg="Info: $INFOSTRING runs on $BLADE_HOSTNAME, not starting on $host_name"
+                  fw_log "$errmsg" 0
+                  exit_error "No $IFCONFIG_TOOL on path. Can't resolve <$BLADE_HOSTNAME>." 127
+              fi
+              #
+              # Try IP tool 1st if it's available
+              #
+              if [[ ! -z $IP ]]; then
+                  host_lookup=`$IP addr 2> /dev/null | grep $BLADE_HOSTNAME`
+              elif [[ ! -z $IFCONFIG ]]; then
+                  host_lookup=`$IFCONFIG 2> /dev/null | grep $BLADE_HOSTNAME`
+              fi
+              if [[ "$host_lookup" = "" ]]; then
+                  errmsg="Info: $INFOSTRING runs on $BLADE_HOSTNAME, not starting on $host_name"
+                  fw_log "$errmsg" 0
+                  exit 0
+              fi
+           fi
+
+           #
+           # If we get this far then any previous Framework issues have been fixed.
+           #
+           rm -f "$LOGDIR/framework.log"
+        fi
+
+        # If an incorrect JVM location is configured and we're attempting a start, exit now.
+        JVM_LOCATION=`$EXECUTOR "$CONFREADER" $CONFREADER_OPTIONS -r "\"$BINARY_ROOT\"" --get-config-value jvm-location 2> /dev/null | tr -d '\r'`
+        if [[ "$JVM_LOCATION" != ""  ]]; then
+           if [[ ! -f "$JVM_LOCATION" && ! -h "$JVM_LOCATION" ]]; then
+              print_red "   Error: $INFOSTRING: No JVM at the configured location: $JVM_LOCATION" 1>&2
+              if [[ $deployment_framework = 1 ]]; then
+                 exit_error "$INFOSTRING: Run the ./dfw info command for help with this issue" 127
+              fi
+           fi
+        fi
+
+        OPTIONS="$OPTIONS -f $CONFIG_FILE_BASENAME -n $BASE2"
+
+
+        echo "${tabbing}Starting $INFOSTRING:"
+
+        ulimit -c unlimited 2> /dev/null
+
+        if [[ ! -z $DSDK_CONFIG_DUMP_DIR_SAVE ]]; then
+           export DSDK_CONFIG_DUMP_DIR=$DSDK_CONFIG_DUMP_DIR_SAVE
+        fi
+        if [[ ! -z $DSDK_CONFIG_DUMP_SAVE ]]; then
+           export DSDK_CONFIG_DUMP=$DSDK_CONFIG_DUMP_SAVE
+        fi
+
+        if [[ $iswindows = 0 ]]; then
+            # coreadm is a Solaris feature, unfortunately there is no way to modify
+            # the core file format on a per process basis on Linux
+            coreadm -e proc-setid 2> /dev/null
+            coreadm -p $LOGDIR/core.%f.%p.%t $$ 2> /dev/null
+    
+            # Set up preload
+            if [[ ! -z "$MY_LD_PRELOAD_32" ]]; then
+               LD_PRELOAD_32=$MY_LD_PRELOAD_32; export LD_PRELOAD_32
+            fi
+            if [[ ! -z "$MY_LD_PRELOAD_64" ]]; then
+               LD_PRELOAD_64=$MY_LD_PRELOAD_64; export LD_PRELOAD_64
+            fi
+            if [[ ! -z "$MY_LD_PRELOAD" ]]; then
+               LD_PRELOAD=$MY_LD_PRELOAD; export LD_PRELOAD
+            fi
+
+            $EXECUTOR "$DSDK_APP" -r "$DSDK_ROOT" $OPTIONS -d
+            EXITCODE=$?
+        else
+            rm -f "$LOGDIR/nohup.out"
+            #
+            # Have to redirect the nohup output to allow this command to be run via ssh.
+            #
+            if [[ $iscygwin = 1 ]]; then
+               $NOHUP $EXECUTOR "$DSDK_APP" -r "\"$BINARY_ROOT\"" $OPTIONS -d 2> "$LOGDIR/nohup.out"  > /dev/null &
+               EXITCODE=$?
+            else
+               #
+               # Start binary using start /b on Git so that CTRL-C in the shell doesn't kill it.
+               #
+               COMMAND="$EXECUTOR \"$DSDK_APP\" -r \"\\\"$BINARY_ROOT\\\"\" $OPTIONS -d 2> \"$LOGDIR/nohup.out\"  > /dev/null &"
+               cd /bin
+               cmd //d //c start //B bash -c "$COMMAND"
+               EXITCODE=$?
+               cd "$sd"
+            fi
+            #
+            # Allow time for nohup.out to be written
+            #
+            sleep 1
+        fi
+
+        if [[ $EXITCODE != 0 ]]; then
+            errmsg="$INFOSTRING exited with code ($EXITCODE)"
+        else
+            # Wait up to 5 seconds and check if pid file exists to catch
+            # post fork exits. 
+            # Also ensure that the pid in the pid file is running in
+            # case an old pid file is lurking around
+
+            num=0
+
+            while [[ ! -f "$PIDFILE" ]]; do
+                sleep 1
+                num=`expr $num + 1`
+
+                if [[ $num -eq 5 ]]; then
+                    break
+                fi
+            done
+
+            fail_start=1
+            if [[ -f "$PIDFILE" ]]; then
+                pid=`cat "$PIDFILE"`
+
+                if [[ "$pid" = "" ]]; then
+                   if [[ -z $DSDK_CONFIG_DUMP ]]; then
+                      errmsg="$INFOSTRING may be running but an empty pid file has been created" 1>&2
+                      EXITCODE=12
+                   fi
+                   rm -f "$PIDFILE"
+                else
+                   if [[ $iswindows = 0 ]]; then
+                      binrunning=`ps -p $pid | grep $pid`
+                   else
+                      binrunning=`$PSCMD | grep -v grep | $AWK '{print $4}' | grep $pid`
+                   fi
+                   if [[ "$binrunning" = "" ]]; then
+                       #
+                       # If we're not running now it's an error unless there is a dump being performed
+                       #
+                       if [[ "$DSDK_CONFIG_DUMP" = "" ]]; then
+                          errmsg="$INFOSTRING exited after startup (no process)"
+                          EXITCODE=12
+                       else
+                          #
+                          # We auto-stop in dump mode so it's ok to not be running
+                          #
+                          fail_start=0
+                       fi
+                       rm -f "$PIDFILE"
+                   else
+                       #
+                       # Started successfully
+                       #
+                       fail_start=0
+                   fi
+               fi
+            elif [[ -z $DSDK_CONFIG_DUMP ]]; then
+                errmsg="$INFOSTRING exited after startup (no pid file)"
+                EXITCODE=12
+            fi
+        fi
+        if [[ $fail_start != 0 && $deployment_framework = 1 && -f "$BINARY_ROOT"/bin/start-jar.sh ]]; then
+            #
+            # If there is a Java log file, cat it to stderr so that the startup script will echo it.
+            #
+            ls -lt "$LOGDIR"/java*.log > /dev/null 2>&1
+            if [[ $? = 0 ]]; then
+                echo
+                print_red "`cat "$LOGDIR"/java*.log`" 1>&2
+                echo
+            fi
+        fi
+        #
+        # Output the messages redirected by nohup
+        #
+        if [[ -f "$LOGDIR/nohup.out" ]]; then
+           cat "$LOGDIR/nohup.out"
+           echo
+        fi
+
+        #
+        # Have to defer printing the error message so it appears after nohup.out if there is one.
+        #
+        if [[ "$errmsg" != "" ]]; then
+           exit_error "$errmsg" $EXITCODE
+        fi
+        #
+        # If this was a dump make sure the binary is stopped.
+        #
+        if [[ ! -z $DSDK_CONFIG_DUMP ]]; then
+           echo "${tabbing}$INFOSTRING: Configuration dumped to $DSDK_CONFIG_DUMP_DIR"
+           unset DSDK_CONFIG_DUMP
+           unset DSDK_CONFIG_DUMP_DIR
+           if [[  -f "$PIDFILE" ]]; then
+              "$0" stop 
+           fi
+        fi
+        echo
+
+	;;
+  stop)
+        if [[ -f "$LOGDIR/loop.log" ]]; then
+	    echo "${tabbing}Shutting down loop for $INFOSTRING: "
+            looppid=`grep loop-pid "$LOGDIR/loop.log" | tail -1 | $AWK '{ print $2 }'`
+            if [[ "$looppid" != "" ]]; then
+                kill $looppid > /dev/null 2>&1
+            fi
+            echo
+        fi
+        
+        if [[ -f "$PIDFILE" ]]; then
+	    echo "${tabbing}Shutting down $INFOSTRING: "
+
+            pid=`cat "$PIDFILE"`
+            if [[ "$pid" = "" ]]; then
+               rm -f "$PIDFILE"
+               exit_error "Can't stop $APP, pidfile is empty. Removing empty pidfile <$PIDFILE>" 12
+            else
+
+               if [[ $iswindows = 0 ]]; then
+                   kill -TERM $pid > /dev/null 2>&1
+               else
+                   if [[ $iscygwin = 1 ]]; then
+                      taskkill /F /PID $pid > /dev/null 2>&1
+                   else
+                      if [[ ! -z $DSDK_JAVA_BLADE ]]; then
+                         #
+                         # On Git bash we have to use bash kill for Java blades so that
+                         # all the Java processes are killed.
+                         #
+                         kill -TERM $pid > /dev/null 2>&1
+                      else
+                         # Msys will convert to windows path if a single slash is given.
+                         taskkill //F //PID $pid > /dev/null 2>&1
+                      fi
+                   fi
+               fi
+               rm -f "$PIDFILE"
+
+               num=0
+
+               #
+               # Give the process a chance to shut down so as not to echo the "waiting" message unecessarily.
+               #
+               sleep 1
+               #
+               # Make sure the process is dead. For non-Windows do a progressive kill.
+               # For Windows, just keep killing it for 10 attempts.
+               #
+               while [[ $num -lt 10 ]]; do
+                  if [[ $iswindows = 0 ]]; then
+                     binrunning=`ps -p $pid | grep -v grep | awk '{print $1}' | grep $pid`
+                  else
+                     binrunning=`$PSCMD | grep -v grep | $AWK '{print $4}' | grep $pid`
+                  fi
+                  if [[ "$binrunning" != "" ]]; then
+                     #
+                     # Binary still running
+                     #
+                     echo "${tabbing}Waiting for $APP <$pid> to stop"
+                     if [[ $iswindows = 0 ]]; then
+                        #
+                        # On non-Windows just wait for process to disappear before using KILL
+                        #
+                        if [[ $num -eq 9 ]]; then
+                           echo "${tabbing}Killing $APP <$pid> again"
+                           kill -KILL $pid 
+                           break
+                        fi
+                     else
+                        #
+                        # On Windows just keep killing the process
+                        #
+                        if [[ $iscygwin = 1 ]]; then
+                           taskkill /F /PID $pid > /dev/null 2>&1
+                        else
+                           taskkill //F //PID $pid > /dev/null 2>&1
+                        fi
+                     fi
+                     sleep 1
+                     num=`expr $num + 1`
+                  else
+                     break
+                  fi
+               done
+           fi
+           echo
+        fi
+
+	;;
+  check)
+        if [[ ! -f "$PIDFILE" ]]; then
+
+            date
+            echo "${tabbing}============================"
+            "$0" start-noloop
+            # Save $0 exit code
+            EXITCODE=$?
+
+        else
+        
+            PID=`cat "$PIDFILE"`
+
+            ps -ae | grep -v grep | grep "$PID " > /dev/null 2>&1
+
+            if [[ $? != 0 ]]; then
+
+                date
+                echo "${tabbing}============================"
+                "$0" start-noloop
+                # Save $0 exit code
+                EXITCODE=$?
+            else
+                echo "${tabbing}$INFOSTRING is running"
+            fi
+            
+        fi
+        ;;
+
+  start-loop)
+        if [[ -f "$LOGDIR/loop.log" ]]; then
+
+            looppid=`grep loop-pid "$LOGDIR/loop.log" | tail -1 | $AWK '{ print $2 }'`
+
+            if [[ "$looppid" != "" ]]; then
+
+                kill $looppid > /dev/null 2>&1
+
+            fi
+
+        fi
+        
+        (date; echo "============================") > "$LOGDIR/loop.log"
+
+        "$0" start-noloop 2>&1 | tee "$LOGDIR/loop.log"
+
+        # If $0 exited, exit here because we're about to call it again
+        EXITCODE=$?
+        if [[ $EXITCODE != 0 ]]; then
+            exit $EXITCODE
+        fi
+
+        nohup "$0" loop >> "$LOGDIR/loop.log" 2>&1 &
+        # Save $0 exit code
+        EXITCODE=$?
+        ;;
+  loop)
+        echo "loop-pid $$"
+        while true; do
+
+            sleep 5
+
+            "$0" check
+            # Save $0 exit code
+            EXITCODE=$?
+
+        done
+        ;;
+
+  *) echo "${tabbing}Incorrect option <$option>
+${tabbing}Usage: $0 {start|stop|translate|check|clean|clean-nostop|cleanstart|cleanstart|dump|loop|macro|restart|start|start-loop|start-noloop|status|stop|value|veryclean|verycleanstart}"
+
+	exit 1
+        ;;
+esac
+
+if [[ $EXITCODE != 0 ]]; then
+    exit $EXITCODE
+fi
+
+exit 0

@@ -1,81 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProductVersion>8.0.50727</ProductVersion>
-        <SchemaVersion>2.0</SchemaVersion>
-        <ProjectGuid>{65982154-767C-455E-A10F-4317A79A5ECB}</ProjectGuid>
-        <OutputType>Exe</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>Caplin.Template</RootNamespace>
-        <AssemblyName>TemplatePricingAdapter</AssemblyName>
-        <SccProjectName>
-        </SccProjectName>
-        <SccLocalPath>
-        </SccLocalPath>
-        <SccAuxPath>
-        </SccAuxPath>
-        <SccProvider>
-        </SccProvider>
-        <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-        <FileUpgradeFlags>
-        </FileUpgradeFlags>
-        <UpgradeBackupLocation>
-        </UpgradeBackupLocation>
-        <OldToolsVersion>2.0</OldToolsVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{65982154-767C-455E-A10F-4317A79A5ECB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Caplin.Template</RootNamespace>
+    <AssemblyName>TemplatePricingAdapter</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DataSource.NET">
+      <HintPath>lib\DataSource.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\*.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- TODO: this should really be it's own task that is run befor running it -->
+  <Target Name="AfterBuild">
     <ItemGroup>
-        <Reference Include="DataSource.NET, Version=4.5.17.4, Culture=neutral, PublicKeyToken=7a3b598bcc758fcc, processorArchitecture=MSIL">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>lib\DataSource.NET.dll</HintPath>
-        </Reference>
-        <Reference Include="System" />
-        <Reference Include="System.Data" />
-        <Reference Include="System.Xml" />
+      <CONFIG Include="blade\**\*.*" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="src/*.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
+      <LIBRARIES Include="lib\*.*" />
     </ItemGroup>
-    <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-
-    <!-- TODO: this should really be it's own task that is run befor running it -->
-    <Target Name="AfterBuild"> 
-        <ItemGroup>
-            <CONFIG Include="blade\**\*.*" />
-        </ItemGroup>
-        <ItemGroup>
-            <LIBRARIES Include="lib\*.*" />
-        </ItemGroup>
-        <ItemGroup>
-            <EXECUTABLE Include="$(TargetDir)\*.exe" />
-        </ItemGroup>
-        <Copy SourceFiles="@(CONFIG)" DestinationFolder="$(TargetDir)\TemplatePricingAdapter-0.0.0\%(RecursiveDir)" SkipUnchangedFiles="true" />
-        <Copy SourceFiles="@(LIBRARIES)" DestinationFolder="$(TargetDir)\TemplatePricingAdapter-0.0.0\DataSource\bin\" SkipUnchangedFiles="true" />
-        <Copy SourceFiles="@(EXECUTABLE)" DestinationFolder="$(TargetDir)\TemplatePricingAdapter-0.0.0\DataSource\bin\" SkipUnchangedFiles="true" />
-    </Target>
-
-
-
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+    <ItemGroup>
+      <EXECUTABLE Include="$(TargetDir)\*.exe" />
+    </ItemGroup>
+    <Copy SourceFiles="@(CONFIG)" DestinationFolder="$(TargetDir)\TemplatePricingAdapter-0.0.0\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(LIBRARIES)" DestinationFolder="$(TargetDir)\TemplatePricingAdapter-0.0.0\DataSource\bin\" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(EXECUTABLE)" DestinationFolder="$(TargetDir)\TemplatePricingAdapter-0.0.0\DataSource\bin\" SkipUnchangedFiles="true" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
@@ -83,7 +82,7 @@
   </Target>
   -->
   <PropertyGroup>
-      <PostBuildEvent>
-      </PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
