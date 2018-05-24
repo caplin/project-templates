@@ -16,10 +16,12 @@ namespace Caplin.Template
         private IDataSource dataSource;
         private IActivePublisher publisher;
         private Dictionary<string, Timer> activeSubscriptions = new Dictionary<string, Timer>();
+        private Timer timer = new Timer(2000);
 
         public PricingTemplateDataProvider(IDataSource dataSource)
         {
             this.dataSource = dataSource;
+            timer.Enabled = true;
         }
 
         public void Initialise()
@@ -29,14 +31,12 @@ namespace Caplin.Template
 
         public void ReceiveRequest(IRequestEvent requestEvent)
         {
+
             var split = requestEvent.Subject.Split('/');
 
-            if ( split.Length == 4 && split[3].Length > 0) {
-                var timer = new Timer();
+            if ( split.Length == 5 && split[4].Length > 0) {
                 var priceGenerator = new PriceGenerator(requestEvent.Subject, publisher, dataSource.Logger);
                 timer.Elapsed += (sender, e) => priceGenerator.Emit();
-                timer.Interval = 2000;
-                timer.Enabled = true;
 
                 activeSubscriptions.Add(requestEvent.Subject, timer);
             } else {
@@ -55,22 +55,36 @@ namespace Caplin.Template
             private readonly string subject;
             private readonly ILogger logger;
             private readonly IActivePublisher publisher;
+            private readonly Random random;
+            private bool isInitialResponse;
+            private Double price;
 
             public PriceGenerator(string subject, IActivePublisher publisher, ILogger logger)
             {
                 this.subject = subject;
                 this.logger = logger;
                 this.publisher = publisher;
+                this.isInitialResponse = true;
+                this.random = new Random();
+                this.price = random.NextDouble() * Math.Pow(10, random.Next(0,3));
             }
 
             public void Emit() 
             {
-                IRecordMessage genericMessage = publisher.MessageFactory.CreateGenericMessage(subject);
+                price = random.Next(0,1) == 1 ? price + random.NextDouble() : price - random.NextDouble();
 
-                genericMessage.SetField("BestBid", 10.ToString());
-                genericMessage.SetField("BestAsk", 10.ToString());
+                IGenericMessage genericMessage = publisher.MessageFactory.CreateGenericMessage(subject);
 
-                publisher.PublishInitialMessage(genericMessage);
+                genericMessage.SetField("BestBid", price.ToString());
+                genericMessage.SetField("BestAsk", (price - (price * random.Next(1,3) / 100)).ToString());
+
+                if (isInitialResponse) {
+                    publisher.PublishInitialMessage(genericMessage);
+                    isInitialResponse = false;
+
+                } else {
+                    publisher.PublishToSubscribedPeers(genericMessage);
+                }
             }
         }
     }
@@ -82,16 +96,15 @@ namespace Caplin.Template
 
         private readonly IDataSource dataSource;
         private readonly Dictionary<string, IChannel> newChannels = new Dictionary<string, IChannel>();
-        private Timer timer = new Timer();
+        private Timer timer = new Timer(1000);
 
 
         public ChannelTemplate(IDataSource dataSource)
         {
             this.dataSource = dataSource;
-            timer.Interval = 1000;
             timer.Elapsed += (sender, e) => {
                 foreach (KeyValuePair<string, IChannel> pair in newChannels) {
-                        IRecordMessage message = pair.Value.CreateRecordMessage(pair.Key);
+                        IRecordMessage message = pair.Value.CreateGenericMessage(pair.Key);
                         message.SetField(OPERATION_FIELD, "Hello");
                         message.SetField(DESCRIPTION_FIELD, "Please send a contrib with the field `operation` set to the value `Ping` to this channel");
                         message.Image = true;
@@ -121,7 +134,7 @@ namespace Caplin.Template
         public void MessageReceived(IChannel channel, IRecordMessage recordMessage)
         {
             newChannels.Remove(channel.Subject); //Take channel out of newChannels map so that we don't send the Hello
-            IRecordMessage message = channel.CreateRecordMessage(channel.Subject);
+            IRecordMessage message = channel.CreateGenericMessage(channel.Subject);
 
             if (recordMessage[OPERATION_FIELD].Equals("Ping")) {
                 message.SetField(OPERATION_FIELD, "Pong");

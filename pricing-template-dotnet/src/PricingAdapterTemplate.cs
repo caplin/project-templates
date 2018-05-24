@@ -25,7 +25,7 @@ namespace Caplin.Template
 
             pricingTemplateDataProvider.Initialise();
             //containerTemplateDataProvider.initialise();
-            //channelTemplate.initialise();
+            channelTemplate.Initialise();
             //type2DataProvider.initialise();
         }
 
