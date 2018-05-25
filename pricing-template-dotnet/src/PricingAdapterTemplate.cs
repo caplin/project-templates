@@ -32,8 +32,7 @@ namespace Caplin.Template
         static void Main(string[] args)
         {
 
-            ILogger logger = new ConsoleLogger();
-            IDataSource dataSource = new Caplin.DataSource.DataSource("TemplatePricingAdapter.conf", args, logger);
+            IDataSource dataSource = new Caplin.DataSource.DataSource("TemplatePricingAdapter.conf", args);
             var templateAdapter = new PricingAdapterTemplate(dataSource);
 
             templateAdapter.Initialise();
