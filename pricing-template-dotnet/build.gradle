@@ -1,13 +1,13 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
+apply plugin: "base"
+apply plugin: "maven"
 
 ext {
     major = 0
     minor = 0
     patch = 0
-
+    releasecsproj = "TemplatePricingAdapter.csproj"
     adapterName = project.name
     replacements = [
             adapterName: adapterName,
@@ -16,60 +16,83 @@ ext {
 
 version = major + "." + minor + "." + patch
 
+def msbuild_exe;
+
+if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+    msbuild_exe = "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/msbuild.exe"          // DEFAULT INSTALLATION
+} else {
+    msbuild_exe = "xbuild"
+}
+
+configurations {
+    datasource
+}
+
 repositories {
     mavenCentral()
-	maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
-    //maven {
-    //    credentials {
-    //        username "$caplinNexusUser"
-    //        password "$caplinNexusSecret"
-    //    }
-    //    url "https://repository.caplin.com"
-    //}
-}
-
-dependencies {
-    //compile fileTree(dir: 'lib', include: '*.jar')
-    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
-}
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'com.caplin.template.PricingAdapterTemplate',
-                "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
-        )
+    maven {
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "https://repository.caplin.com"
     }
 }
 
-task createKit(type: Zip, dependsOn: jar) {
+dependencies {
+	datasource(group: 'com.caplin.cis.c', name: 'DataSource.NET', version: '7.1.2-311419', classifier: 'x86_64-pc-win64', ext: 'zip')
+}
+
+task unzipDataSource(type: Copy) {
+    description "Unzip the .NET Datasource."
+    from zipTree(configurations.datasource.singleFile)
+    into("${buildDir}/dsDotNet")
+    includeEmptyDirs = false
+    eachFile {
+        it.path = it.path.substring(it.path.indexOf("/") + 1)
+    }
+}
+
+
+task compileRelease(type: Exec, dependsOn: unzipDataSource) {
+    workingDir "."
+    commandLine "${msbuild_exe}", "${projectDir}/Project/${project.ext.releasecsproj}"
+}
+
+clean {
+    delete += "${projectDir}/Project/obj"
+    delete += "${projectDir}/Project/bin"
+}
+
+
+task createKit(type: Zip, dependsOn: [compileRelease]) {
     archiveName = adapterName + "-" + version + ".zip"
     def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
 
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         include 'blade_config/bootstrap.conf'
-        if (!project.hasProperty("configOnly")) {
-            include 'DataSource/bin/start-jar.sh'
-        }
         filter(ReplaceTokens, tokens: replacements)
     }
 
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         exclude 'blade_config/bootstrap.conf'
-        exclude 'DataSource/bin/start-jar.sh'
     }
 
     if (!project.hasProperty("configOnly")) {
-        into("${topDirName}/DataSource/lib") {
-            from([project.jar.outputs, configurations.compile])
+        into("${topDirName}/DataSource/bin") {
+            from("${buildDir}/dsDotNet")
+			include "*.dll"
+        }
+        into("${topDirName}/DataSource/bin") {
+            from("${projectDir}/Project/bin/Release")
+			include "TemplatePricingAdapter.exe"
         }
     }
 }
 
 task setupWorkingDirectory(type: Copy) {
-
     from("${project.projectDir}/blade") {
         include 'blade_config/bootstrap.conf'
         filter(ReplaceTokens, tokens: replacements)
@@ -85,7 +108,6 @@ task setupWorkingDirectory(type: Copy) {
 
 task createEnvironmentConfig << {
     String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
-
     String content = """
                      define THIS_LEG                            ${thisLeg}
                      define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
@@ -101,5 +123,4 @@ task createEnvironmentConfig << {
 }
 
 setupWorkingDirectory.finalizedBy createEnvironmentConfig
-
 assemble.dependsOn(createKit)
