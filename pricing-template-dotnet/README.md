@@ -19,7 +19,7 @@ Follow the instructions below to create a new adapter project based on the Prici
 1.  Copy the template directory `pricing-template` and rename it to the name of your new project (for example, MyPricingAdapter):
 
     ```bash
-    cp -r ./pricing-template ~/src/MyPricingAdapter
+    cp -r ./pricing-template-dotnet ~/src/MyPricingAdapter
     ```
 
 1.  Edit the file `~/src/MyPricingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPricingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
