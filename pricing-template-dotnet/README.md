@@ -27,7 +27,7 @@ Follow the instructions below to create a new adapter project based on the Prici
 1.  Edit the file `~/src/MyPricingAdapter/blade/blade_config/bootstrap.conf`. Set the value of the configuration variable `ROUTE_VIA_TRANSFORMER` to `TRUE` (default) to configure Liberator to route requests to the adapter via Transformer or `FALSE` to configure Liberator to route requests directly to the adapter.
 
     **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
-    
+
 1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
     1.  In your `~/.gradle/gradle.properties` file (create it if it does not exist), add the following lines, replacing `<username>` and `<password>` with your Caplin credentials:
@@ -50,7 +50,7 @@ Follow the instructions below to create a new adapter project based on the Prici
             url "https://repository.caplin.com"
         }*/
         ```
-        
+
     1.  In this project's `build.gradle` add artifactory as a dependency source :
 
         ```groovy
@@ -116,14 +116,25 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
-1.  In your IDE, create a run configuration for the main class of your project:
+1.  In your Solution Explorer, right click your soluton **properties > Debug **:
 
     1.  Set the run configuration's working directory to <code><em>dfw_location</em>/active_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
 
         **Note**: on Microsoft Windows, which does not recognise Unix-style symbolic links, use the path <code><em>dfw_location</em>\\kits\\<em>adapter_name</em>\\<em>adapter_name-version</em>\\DataSource</code>
 
-    1.  Create a run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to.
-    
+    1.  In the soltuon explorer, open your app.config file and Create an XML run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to. Your app config should look something similar to the following:
+
+
+```<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6"/>
+  		<environmentVariables>
+    			<environmentVariable name="CONFIG_BASE" value ="C:/users/Desktop/"/>
+  		</environmentVariables>
+	</startup>
+</configuration>```
+
+
         **Note**: the value of `CONFIG_BASE` must end with a trailing slash.
 
 1.  Run the adapter using the new run configuration.
