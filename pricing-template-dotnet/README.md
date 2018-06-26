@@ -83,6 +83,8 @@ You will need to link your DSDK dll to use the IDE to build/run your adapter wit
 
 1. Extract your DataSource.NET to your new directory
 
+1. Copy all files from the kit with a ".dll" extension to the bin/Debug or bin/Release directory (Depending on the Configuration you are working on)
+
 1. From within Visual Studio, in the Solution Explorer right click the **References** icon, and select **Add Reference...**
 
 1. Click the **Browse** option and navigate to your new lib directory where you have extracted the DataSource.NET kit
