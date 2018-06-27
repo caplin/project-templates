@@ -118,7 +118,7 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
-1.  In your Solution Explorer, right click your soluton Properties > Debug :
+1.  In your Solution Explorer, right click your soluton, **Properties > Debug** :
 
     1.  Set the run configuration's working directory to <code><em>dfw_location</em>/active_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
 
