@@ -124,19 +124,7 @@ To provide your adapter with a working directory and the configuration of the Li
 
         **Note**: on Microsoft Windows, which does not recognise Unix-style symbolic links, use the path <code><em>dfw_location</em>\\kits\\<em>adapter_name</em>\\<em>adapter_name-version</em>\\DataSource</code>
 
-    1.  In the soltuon explorer, open your app.config file and Create an XML run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to. Your app config should look something similar to the following:
-
-
-```<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-	<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6"/>
-  		<environmentVariables>
-    			<environmentVariable name="CONFIG_BASE" value ="C:/users/Desktop/"/>
-  		</environmentVariables>
-	</startup>
-</configuration>
-```
-
+    1.  You will then need to create an OS level custom Environment Variable for CONFIG_BASE, pointing to your deployment framework's global_config folder.
 
         **Note**: the value of `CONFIG_BASE` must end with a trailing slash.
 
