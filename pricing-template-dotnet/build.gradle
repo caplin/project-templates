@@ -80,15 +80,16 @@ task createKit(type: Zip, dependsOn: [compileRelease]) {
         exclude 'blade_config/bootstrap.conf'
     }
 
-    into("${topDirName}/DataSource/bin") {
-        from("${buildDir}/dsDotNet")
-  include "*.dll"
-    }
-
     if (!project.hasProperty("configOnly")) {
         into("${topDirName}/DataSource/bin") {
+            from("${buildDir}/dsDotNet")
+            include "*.dll"
+        }
+
+
+        into("${topDirName}/DataSource/bin") {
             from("${projectDir}/Project/bin/Release")
-			include "TemplatePricingAdapter.exe"
+			      include "TemplatePricingAdapter.exe"
         }
     }
 }
