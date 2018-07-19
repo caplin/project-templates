@@ -90,6 +90,7 @@ task createKit(type: Zip, dependsOn: [compileRelease]) {
         into("${topDirName}/DataSource/bin") {
             from("${projectDir}/Project/bin/Release")
 			      include "TemplatePricingAdapter.exe"
+            fileMode 0755
         }
     }
 }
