@@ -80,6 +80,13 @@ task createKit(type: Zip, dependsOn: [compileRelease]) {
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         exclude 'blade_config/bootstrap.conf'
+        exclude 'DataSource/etc/adapterName'
+    }
+
+    into("${topDirName}") {
+        from "${project.projectDir}/blade"
+        include 'DataSource/etc/adapterName'
+        fileMode 0755
     }
 
     if (!project.hasProperty("configOnly")) {
