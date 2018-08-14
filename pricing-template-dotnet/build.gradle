@@ -9,8 +9,10 @@ ext {
     patch = 0
     releasecsproj = "TemplatePricingAdapter.csproj"
     adapterName = project.name
+    ideSetting = "FALSE"
     replacements = [
             adapterName: adapterName,
+	    ideSetting: ideSetting,
     ]
 }
 
@@ -99,7 +101,7 @@ task createKit(type: Zip, dependsOn: [compileRelease]) {
 
         into("${topDirName}/DataSource/bin") {
             from("${projectDir}/Project/bin/Release")
-			      include "TemplatePricingAdapter.exe"
+	    include "TemplatePricingAdapter.exe"
             fileMode 0755
         }
     }
