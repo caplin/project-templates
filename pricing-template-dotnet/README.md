@@ -16,7 +16,7 @@ Follow the instructions below to create a new adapter project based on the Prici
 
     *   `git clone https://github.com/caplin/project-templates.git`
 
-1.  Copy the template directory `pricing-template` and rename it to the name of your new project (for example, MyPricingAdapter):
+1.  Copy the template directory `pricing-template` and you may rename it to the name of your new project (for example, MyPricingAdapter):
 
     ```bash
     cp -r ./pricing-template-dotnet ~/src/MyPricingAdapter
@@ -77,7 +77,7 @@ To import your project into Visual Studio, follow the steps below:
 
 You will need to link your DSDK dll to use the IDE to build/run your adapter without gradle, to do this follow the steps below:
 
-1. Download the latest DotNetDSDK from the Caplin Website: https://caplin.com/developer/downloads
+1. Download the latest Download the latest .NET DataSource API from the Caplin Website: https://www.caplin.com/developer/downloads
 
 1. Create a directory in your **Project** folder for the DSDK E.G. Project/Lib/
 
