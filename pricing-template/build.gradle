@@ -69,7 +69,6 @@ task createKit(type: Zip, dependsOn: jar) {
 }
 
 task setupWorkingDirectory(type: Copy) {
-
     from("${project.projectDir}/blade") {
         include 'blade_config/bootstrap.conf'
         filter(ReplaceTokens, tokens: replacements)
@@ -83,9 +82,8 @@ task setupWorkingDirectory(type: Copy) {
     into("${buildDir}/env")
 }
 
-task createEnvironmentConfig << {
+task createEnvironmentConfig () {
     String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
-
     String content = """
                      define THIS_LEG                            ${thisLeg}
                      define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
@@ -100,6 +98,6 @@ task createEnvironmentConfig << {
     new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/environment-ide.conf").text=content
 }
 
-setupWorkingDirectory.finalizedBy createEnvironmentConfig
+setupWorkingDirectory.dependsOn createEnvironmentConfig
 
 assemble.dependsOn(createKit)
