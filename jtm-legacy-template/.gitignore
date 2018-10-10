@@ -1,0 +1,14 @@
+build/
+.gradle
+.idea
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# VS Code with Java extension
+.vscode
+.classpath
+.project
+.settings/
+bin/
