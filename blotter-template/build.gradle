@@ -20,13 +20,14 @@ repositories {
     flatDir {
         dirs 'lib'
     }
-    maven {
+    mavenCentral()
+    /*maven {
         credentials {
             username "$caplinNexusUser"
             password "$caplinNexusSecret"
         }
         url "https://repository.caplin.com"
-    }
+    }*/
 }
 
 dependencies {

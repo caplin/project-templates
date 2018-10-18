@@ -20,6 +20,7 @@ repositories {
     flatDir {
         dirs 'lib'
     }
+    mavenCentral()
 //    maven {
 //        credentials {
 //            username "$caplinNexusUser"
