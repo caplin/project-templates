@@ -44,7 +44,7 @@ repositories {
 }
 
 dependencies {
-	datasource(group: 'com.caplin.cis.c', name: 'DataSource.NET', version: '7.1.2-311419', classifier: 'x86_64-pc-win64', ext: 'zip')
+	datasource(group: 'com.caplin.cis.c', name: 'DataSource.NET', version: '7.1+', classifier: 'x86_64-pc-win64', ext: 'zip')
 }
 
 task unzipDataSource(type: Copy) {
