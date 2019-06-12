@@ -1,15 +1,10 @@
-# Caplin Notification Adapter Template
+# Caplin Pricing Adapter Template for DotNet
 
-This project provides a starting point for writing notification integration adapters based on Caplin's [Java DataSource API](http://www.caplin.com/developer/api/datasource_java/latest/) and Caplin's [Java Notification API](http://www.caplin.com/developer/api/notification_java/latest/).
-
-This template is a [Gradle](https://gradle.org/) project. To avoid compatibility issues between the version of Gradle required by the project and the version of Gradle installed on your system, always run the project's Gradle tasks using the Gradle Wrapper from the root of the project: <code>./gradlew <em>task</em></code>
-
-**Note**: the Gradle Wrapper requires an Internet connection. For more information, see [Executing a build with the Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#using_wrapper_scripts) in the Gradle documentation.
-
+This template project provides a starting point for writing pricing integration adapters based on Caplin's [C# DataSource API](https://www.caplin.com/developer/api/datasource_dotnet/latest).
 
 ## Getting started
 
-Follow the instructions below to create a new adapter project based on the Notification Adapter Template.
+Follow the instructions below to create a new adapter project based on the Pricing Adapter Template for DotNet.
 
 ### Copy and customise the template
 
@@ -21,13 +16,17 @@ Follow the instructions below to create a new adapter project based on the Notif
 
     *   `git clone https://github.com/caplin/project-templates.git`
 
-1.  Copy the template directory `notification-template` and rename it to the name of your new project (for example, MyNotificationAdapter):
+1.  Copy the template directory `pricing-template` and you may rename it to the name of your new project (for example, MyPricingAdapter):
 
     ```bash
-    cp -r ./notification-template ~/src/MyNotificationAdapter
+    cp -r ./pricing-template-dotnet ~/src/MyPricingAdapter
     ```
 
-1.  Edit the file `~/src/MyNotificationAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyNotificationAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade), the project name will be used as the name for the blade.
+1.  Edit the file `~/src/MyPricingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPricingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
+
+1.  Edit the file `~/src/MyPricingAdapter/blade/blade_config/bootstrap.conf`. Set the value of the configuration variable `ROUTE_VIA_TRANSFORMER` to `TRUE` (default) to configure Liberator to route requests to the adapter via Transformer or `FALSE` to configure Liberator to route requests directly to the adapter.
+
+    **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
 
 1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
@@ -51,56 +50,54 @@ Follow the instructions below to create a new adapter project based on the Notif
             url "https://repository.caplin.com"
         }*/
         ```
-        
-    1.  In this project's `build.gradle` file, uncomment the `compile fileTree(...)` line in the `dependencies` block:
+
+    1.  In this project's `build.gradle` add artifactory as a dependency source :
 
         ```groovy
-        dependencies {
-            compile fileTree(dir: 'lib', include: '*.jar')
-
-            ...
-        }
-        ```
-
-    1.  Copy the following Caplin libraries to this project's `lib` directory:
-
-        *   Java DataSource API 7+: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
-
-        *   Java Notification API 7+: <code>NotificationJava-<em>version</em>.jar</code>
+        repositories {
+    		mavenCentral()
+    		maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
+	}```
 
 
-### Import your new project into an IDE
-Follow the instructions below to import your new adapter project into Eclipse or IntelliJ IDEA.
 
-#### Eclipse
-These instructions require the Buildship Gradle Integration plugin. To install the plugin, click **Help > Eclipse Marketplace** and search for `Buildship`.
+### Import your new project into Visual Studio
 
-To import your project into Eclipse, follow the steps below:
+To import your project into Visual Studio, follow the steps below:
 
-1.  In Eclipse, click **File > Import**. The Import dialog appears.
+1.  In VS, click **File > Open > Project/Solution**. The File Manager should appear.
 
-1.  Click **Existing Gradle Project**. The Import Gradle Project dialog appears.
+1.  Navigate to the DotNet Template in your project templates, Go into **Project**.
 
-1.  Under **Project location**, deselect **Use default location**.
+1.  Select the **TemplatePricingAdapter.csproj**.
 
-1.  In the **Location** field, select your adapter's project directory: `~/src/MyNotificationAdapter`
+1.  Click **Open**.
 
-1.  Click **Finish**.
+### Reference the DataSource.NET In your solution
 
-#### IntelliJ IDEA
+You will need to link your DSDK dll to use the IDE to build/run your adapter without gradle, to do this follow the steps below:
 
-To import your project into IntelliJ IDEA, follow the steps below:
+1. Download the latest Download the latest .NET DataSource API from the Caplin Website: https://www.caplin.com/developer/downloads
 
-1.  Click **File > New > Project from existing sources**
+1. Create a directory in your **Project** folder for the DSDK E.G. Project/Lib/
 
-1.  Select the project's Gradle build file: `~/src/MyNotificationAdapter/build.gradle`
+1. Extract your DataSource.NET to your new directory
 
+1. Copy all files from the kit with a ".dll" extension to the bin/Debug or bin/Release directory (Depending on the Configuration you are working on)
 
-## Running your adapter within an IDE
+1. From within Visual Studio, in the Solution Explorer right click the **References** icon, and select **Add Reference...**
 
-Integration adapters are designed to run within the context of a [Deployment Framework](http://www.caplin.com/developer/caplin-platform/deployment-framework) (DFW), but they can be configured to run within an IDE during their development. This saves you time and allows you to take advantage of your IDE's debugging tools.
+1. Click the **Browse** option and navigate to your new lib directory where you have extracted the DataSource.NET kit
 
-Regardless of whether your adapter is running in your IDE or in a DFW, it needs a working directory and the configuration details of the Liberator or Transformer it  connects to. How these requirements are met within an IDE depends on whether the Liberator or Transformer is local or remote to your development machine.
+1. Include the DataSource.NET.dll and Click **Ok**
+
+## Building and deploying the adapter blade
+
+Follow the steps below to build and deploy your adapter.
+
+1.  From the root of your project, run `./gradlew assemble`. This command packages your adapter in an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade) under `build/distributions/`.
+
+1.  Deploy the adapter blade to each Deployment Framework in your deployment infrastructure. For instructions on how to deploy an adapter blade to a Deployment Framework, see [Deploy a custom blade](https://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-deploy-a-custom-blade).
 
 
 ### Running your adapter with a local Liberator or Transformer
@@ -109,7 +106,7 @@ This section describes how to connect an adapter in an IDE to a Liberator or Tra
 
 To provide Liberator or Transformer with your adapter's configuration, follow the steps below:
 
-1.  From the root of your project, run `./gradlew assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#Config-blade) under `build/distributions/`.
+1.  From the root of your project, run `./gradlew assemble -PconfigOnly`. This command packages your adapter's configuration (but not the binary) within a [config-only blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#config-blade) under `build/distributions/`.
 
 1.  Copy the config-only blade to the `kits` directory of your local DFW.
 
@@ -121,14 +118,14 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
-1.  In your IDE, create a run configuration for the main class of your project:
+1.  In your Solution Explorer, right click your soluton, **Properties > Debug** :
 
     1.  Set the run configuration's working directory to <code><em>dfw_location</em>/active_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
-    
+
         **Note**: on Microsoft Windows, which does not recognise Unix-style symbolic links, use the path <code><em>dfw_location</em>\\kits\\<em>adapter_name</em>\\<em>adapter_name-version</em>\\DataSource</code>
 
-    1.  Create a run-configuration environment variable `CONFIG_BASE` with the value <code><em>dfw_location</em>/global_config/</code>, where <code><em>dfw_location</em></code> is the path to your local DFW. This provides your adapter with the path to the configuration of the Liberator or Transformer it connects to.
-    
+    1.  You will then need to create an OS level custom Environment Variable for CONFIG_BASE, pointing to your deployment framework's global_config folder.
+
         **Note**: the value of `CONFIG_BASE` must end with a trailing slash.
 
 1.  Run the adapter using the new run configuration.
@@ -173,40 +170,6 @@ To provide your adapter with a working directory and the configuration of the Li
 1.  Run the adapter using the new run configuration.
 
 **Note**: if you change your adapter's configuration, you must repeat the steps above.
-
-
-## Setting JVM options
-
-To pass options to the Java virtual machine (JVM) that runs your adapter in your IDE, add the JVM options to the adapter's run configuration.
-
-To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
-
-```bash
-if [ $confreading = 1 ]; then
-   java -jar "$jar" "$@"
-   exit $?
-else
-   java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
-   echo $!
-fi
-```
-
-For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
-
-```bash
-java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
-```
-
-**Note**: The JVM heap sizes in this example are illustrative only. Profile your adapter to determine the optimal values for your use cases.
-
-## Building and deploying the adapter blade
-
-Follow the steps below to build and deploy your adapter.
-
-1.  From the root of your project, run `./gradlew assemble`. This command packages your adapter in an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade) under `build/distributions/`.
-
-1.  Deploy the adapter blade to each Deployment Framework in your deployment infrastructure. For instructions on how to deploy an adapter blade to a Deployment Framework, see [Deploy a custom blade](https://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-deploy-a-custom-blade).
-
 
 ## How to report issues with the template
 To report an issue with the template, please contact Caplin Support or [raise an issue](https://github.com/caplin/project-templates/issues) on GitHub.
