@@ -14,23 +14,20 @@ ext {
     ]
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 version = major + "." + minor + "." + patch
 
 repositories {
+    mavenLocal()
+    maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
+    maven {url "http://artifactory.caplin.com/artifactory/caplin-ci/" }
     mavenCentral()
-	maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
-    //maven {
-    //    credentials {
-    //        username "$caplinNexusUser"
-    //        password "$caplinNexusSecret"
-    //    }
-    //    url "https://repository.caplin.com"
-    //}
 }
 
 dependencies {
-    //compile fileTree(dir: 'lib', include: '*.jar')
-    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
+    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '0.0.0-dev')
 }
 
 jar {
