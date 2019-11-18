@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+')
+    compile(group: 'com.caplin.platform.components', name: 'JTM', version: '7.1.+')
 }
 
 jar {

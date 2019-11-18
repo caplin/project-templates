@@ -32,8 +32,8 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
-    compile(group: 'com.caplin.platform.integration.java', name: 'trading-datasource', version: '7.0.+')
+    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
+    compile(group: 'com.caplin.platform.integration.java', name: 'trading-datasource', version: '7.1.+')
     //compile(name: 'SimpleFXMessenger', version: '0.0.+') { transitive = false }
 }
 
