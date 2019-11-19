@@ -21,10 +21,6 @@ repositories {
         dirs 'lib'
     }
     mavenCentral()
-    maven {
-        name 'caplin-artifactory-rc'
-        url  'http://artifactory.caplin.com/caplin-rc/'
-    }
 //    maven {
 //        credentials {
 //            username "$caplinNexusUser"
