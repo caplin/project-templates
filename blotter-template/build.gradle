@@ -86,7 +86,7 @@ task setupWorkingDirectory(type: Copy) {
     into("${buildDir}/env")
 }
 
-task createEnvironmentConfig << {
+task createEnvironmentConfig () {
     String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
 
     String content = """
