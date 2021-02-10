@@ -18,19 +18,17 @@ version = major + "." + minor + "." + patch
 
 repositories {
     mavenCentral()
-	maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
-    //maven {
-    //    credentials {
-    //        username "$caplinNexusUser"
-    //        password "$caplinNexusSecret"
-    //    }
-    //    url "https://repository.caplin.com"
-    //}
+    maven {
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "https://repository.caplin.com"
+    }
 }
 
 dependencies {
-    //compile fileTree(dir: 'lib', include: '*.jar')
-    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
+    compile fileTree(dir: 'lib', include: '*.jar')
 }
 
 jar {
