@@ -7,6 +7,7 @@ This repository includes the following templates:
 | Template                                 | Directory                                                                                   |
 |------------------------------------------|---------------------------------------------------------------------------------------------|
 | Pricing Adapter Template                 | [./pricing-template](./pricing-template#caplin-pricing-adapter-template)                    |
+| Pricing Adapter Template .NET            | [./pricing-template-dotnet](./pricing-template-dotnet#caplin-pricing-adapter-template-dotnet)             |
 | Trading Adapter Template                 | [./trading-template](./trading-template#caplin-trading-adapter-template)                    |
 | Permissioning Adapter Template           | [./permissioning-template](./permissioning-template#caplin-permissioning-adapter-template)  |
 | Notification Adapter Template            | [./notification-template](./notification-template#caplin-notification-adapter-template)     |
