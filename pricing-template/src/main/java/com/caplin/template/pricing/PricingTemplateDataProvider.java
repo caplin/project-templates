@@ -18,7 +18,7 @@ public class PricingTemplateDataProvider implements DataProvider {
 
     private final DataSource dataSource;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-    private final ConcurrentHashMap<String, ScheduledFuture> activeSubscriptionsMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ScheduledFuture<?>> activeSubscriptionsMap = new ConcurrentHashMap<>();
 
     private ActivePublisher publisher;
 
@@ -48,7 +48,7 @@ public class PricingTemplateDataProvider implements DataProvider {
     public void onDiscard(DiscardEvent discardEvent) {
         dataSource.getLogger().log(Level.INFO, "Got discard for" + discardEvent);
 
-        ScheduledFuture scheduledFuture = activeSubscriptionsMap.remove(discardEvent.getSubject());
+        ScheduledFuture<?> scheduledFuture = activeSubscriptionsMap.remove(discardEvent.getSubject());
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
