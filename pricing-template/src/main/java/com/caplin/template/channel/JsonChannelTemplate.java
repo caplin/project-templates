@@ -81,5 +81,9 @@ public class JsonChannelTemplate implements JsonChannelListener {
         public String getOperation() {
             return operation;
         }
+
+        public String getDescription() {
+            return description;
+        }
     }
 }
