@@ -56,7 +56,7 @@ public class JsonChannelTemplate implements JsonChannelListener {
         try {
             JsonMessage message = jsonChannelMessage.getJsonAsType(JsonMessage.class);
             if (message.getOperation().equals("Ping")) {
-                jsonChannel.send(new JsonMessage("Pong", "Pong"));
+                jsonChannel.send(new JsonMessage("Pong", String.valueOf(System.currentTimeMillis())));
             } else {
                 jsonChannel.send(new JsonMessage("Error", "Please send a contrib with the field `operation` set to the value `Ping` to this channel"));
             }
