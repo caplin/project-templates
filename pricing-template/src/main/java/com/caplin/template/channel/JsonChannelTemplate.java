@@ -56,7 +56,7 @@ public class JsonChannelTemplate implements JsonChannelListener {
         try {
             JsonMessage message = jsonChannelMessage.getJsonAsType(JsonMessage.class);
             if (message.getOperation().equals("Ping")) {
-                jsonChannel.send(new JsonMessage("Pong", "Pong"));
+                jsonChannel.send(new JsonMessage("Pong", String.valueOf(System.currentTimeMillis())));
             } else {
                 jsonChannel.send(new JsonMessage("Error", "Please send a contrib with the field `operation` set to the value `Ping` to this channel"));
             }
@@ -65,7 +65,7 @@ public class JsonChannelTemplate implements JsonChannelListener {
         }
     }
 
-    class JsonMessage {
+    static class JsonMessage {
         String operation;
         String description;
 
@@ -73,8 +73,17 @@ public class JsonChannelTemplate implements JsonChannelListener {
             this.operation = operation;
             this.description = description;
         }
+
+        JsonMessage(){
+            this.operation = "";
+            this.description = "";
+        }
         public String getOperation() {
             return operation;
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 }
