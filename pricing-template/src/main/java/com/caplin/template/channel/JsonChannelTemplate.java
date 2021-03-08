@@ -65,13 +65,18 @@ public class JsonChannelTemplate implements JsonChannelListener {
         }
     }
 
-    class JsonMessage {
+    static class JsonMessage {
         String operation;
         String description;
 
         JsonMessage(String operation, String description){
             this.operation = operation;
             this.description = description;
+        }
+
+        JsonMessage(){
+            this.operation = "";
+            this.description = "";
         }
         public String getOperation() {
             return operation;
