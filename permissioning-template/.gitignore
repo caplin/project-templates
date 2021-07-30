@@ -4,7 +4,9 @@ build/
 *.iml
 *.ipr
 *.iws
+*/out/
 .DS_Store
+*/out
 
 # VS Code with Java extension
 .vscode

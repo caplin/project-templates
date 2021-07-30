@@ -3,10 +3,7 @@ package com.caplin.template.jtm;
 import com.caplin.server.logging.ServerLevel;
 import com.caplin.transformer.module.TransformerAccessor;
 import com.caplin.transformer.module.TransformerModule;
-import com.caplin.transformer.module.pipeline.PipelineRegistrarImpl;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 public class TemplateTransformerModule implements TransformerModule {

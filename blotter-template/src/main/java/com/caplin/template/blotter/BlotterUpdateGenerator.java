@@ -65,20 +65,20 @@ public class BlotterUpdateGenerator implements BlotterApplicationListener, Runna
 		
 		//The same parent BlotterItem object can be used across multiple channels,
 		//but only relevant children will be published to each user.
-		currentOcoOrder.setParent(ocoParent);
+		currentOcoOrder.setParentItem(ocoParent);
 		
 		BlotterItem stopLoss = new BlotterItem(Integer.toString(++currentItemIndex));
 		
 		stopLoss.setField("orderType", "stop-loss");
 		stopLoss.setField("rate", Integer.toString(random.nextInt(10) + 5));
-		stopLoss.setParent(currentOcoOrder);
+		stopLoss.setParentItem(currentOcoOrder);
 		
 		
 		BlotterItem limitOrder = new BlotterItem(Integer.toString(++currentItemIndex));
 		
 		limitOrder.setField("orderType", "limit-order");
 		limitOrder.setField("rate", Integer.toString(random.nextInt(10) + 15));
-		limitOrder.setParent(currentOcoOrder);
+		limitOrder.setParentItem(currentOcoOrder);
 		
 		//any added BlotterItem's parents will be added automatically   
 		return asList(stopLoss, limitOrder);
@@ -101,7 +101,7 @@ public class BlotterUpdateGenerator implements BlotterApplicationListener, Runna
 		spot.setField("orderType", "spot");
 		spot.setField("rate", Integer.toString(random.nextInt(10) + 15));
 		
-		spot.setParent(spotParent);
+		spot.setParentItem(spotParent);
 		return spot;
 	}
 

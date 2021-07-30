@@ -31,15 +31,15 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
-    compile(group: 'com.caplin.platform.integration.java', name: 'blotter', version: '7.1.+')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'blotter', version: '7.1.+')
 }
 
 jar {
     manifest {
         attributes(
                 'Main-Class': 'com.caplin.template.BlotterTemplate',
-                "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
+                "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' ')
         )
     }
 }
@@ -66,7 +66,7 @@ task createKit(type: Zip, dependsOn: jar) {
 
     if (!project.hasProperty("configOnly")) {
         into("${topDirName}/DataSource/lib") {
-            from([project.jar.outputs, configurations.compile])
+            from([project.jar.outputs, configurations.compileClasspath])
         }
     }
 
@@ -93,6 +93,8 @@ task createEnvironmentConfig () {
                      define THIS_LEG                            ${thisLeg}
                      define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
                      define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}
+                     define TRANSFORMER${thisLeg}_HOST          ${(project.hasProperty("transformerHost") ? project.liberatorHost : "localhost")}
+                     define TRANSFORMER${thisLeg}_DATASRCPORT   ${(project.hasProperty("transformerDsPort") ? project.liberatorDsPort : "15002")}
                      """.stripIndent()
 
     new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/").mkdirs()

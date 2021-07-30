@@ -31,15 +31,17 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
-   //compile(name: 'SimpleFXMessenger', version: '0.0.+') { transitive = false }
+    implementation(group: 'com.github.fge', name: 'json-patch', version: '1.9')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
+    implementation(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.1')
+    //implementation(name: 'SimpleFXMessenger', version: '0.0.+') { transitive = false }
 }
 
 jar {
     manifest {
         attributes(
                 'Main-Class': 'com.caplin.template.PricingAdapter',
-                "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
+                "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' ')
         )
     }
 }
@@ -65,13 +67,12 @@ task createKit(type: Zip, dependsOn: jar) {
 
     if (!project.hasProperty("configOnly")) {
         into("${topDirName}/DataSource/lib") {
-            from([project.jar.outputs, configurations.compile])
+            from([project.jar.outputs, configurations.compileClasspath])
         }
     }
 }
 
 task setupWorkingDirectory(type: Copy) {
-
     from("${project.projectDir}/blade") {
         include 'blade_config/bootstrap.conf'
         filter(ReplaceTokens, tokens: replacements)
@@ -85,21 +86,22 @@ task setupWorkingDirectory(type: Copy) {
     into("${buildDir}/env")
 }
 
-task createEnvironmentConfig () {
+task createEnvironmentConfig() {
     String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
-
     String content = """
                      define THIS_LEG                            ${thisLeg}
                      define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
                      define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}
                      define TRANSFORMER${thisLeg}_HOST          ${(project.hasProperty("transformerHost") ? project.transformerHost : "localhost")}
                      define TRANSFORMER${thisLeg}_DATASRCPORT   ${(project.hasProperty("transformerDsPort") ? project.transformerDsPort : "15002")}
+
+                     add-field  CONTRIB_USER    20000
                      """.stripIndent()
 
     new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/").mkdirs()
-    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/environment-ide.conf").text=content
+    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/environment-ide.conf").text = content
 }
 
-setupWorkingDirectory.finalizedBy createEnvironmentConfig
+setupWorkingDirectory.dependsOn createEnvironmentConfig
 
 assemble.dependsOn(createKit)

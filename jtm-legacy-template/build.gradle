@@ -31,15 +31,15 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'com.caplin.platform.components', name: 'TransformerModule', version: '7.1.+')
+    implementation(group: 'com.caplin.platform.components', name: 'TransformerModule', version: '7.1.+')
 }
 
 jar {
-    version = null
+    archiveVersion = null
 }
 
 task createKit(type: Zip, dependsOn: [jar, javadoc]) {
-    archiveName = moduleName + "-" + version + ".zip"
+    archiveName = moduleName + "-" + archiveVersion + ".zip"
     def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
 
     into("${topDirName}") {
@@ -49,7 +49,7 @@ task createKit(type: Zip, dependsOn: [jar, javadoc]) {
     }
 
     into("${topDirName}/Transformer/lib/java") {
-        from([project.jar.outputs, configurations.compile])
+        from([project.jar.outputs, configurations.compileClasspath])
     }
 }
 

@@ -1,0 +1,146 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: "base"
+apply plugin: "maven"
+
+ext {
+    major = 0
+    minor = 0
+    patch = 0
+    releasecsproj = "TemplatePricingAdapter.csproj"
+    adapterName = project.name
+    ideSetting = "FALSE"
+    replacements = [
+            adapterName: adapterName,
+	    ideSetting: ideSetting,
+    ]
+}
+
+version = major + "." + minor + "." + patch
+
+def msbuild_exe;
+
+if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+    msbuild_exe = "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/msbuild.exe"          // DEFAULT INSTALLATION
+} else {
+    msbuild_exe = "xbuild"
+}
+
+configurations {
+    datasource
+}
+
+repositories {
+    mavenCentral()
+  /*  maven {
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "https://repository.caplin.com"
+    }*/
+    maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
+
+}
+
+dependencies {
+	datasource(group: 'com.caplin.cis.c', name: 'DataSource.NET', version: '7.1+', classifier: 'x86_64-pc-win64', ext: 'zip')
+}
+
+task unzipDataSource(type: Copy) {
+    description "Unzip the .NET Datasource."
+    from zipTree(configurations.datasource.singleFile)
+    into("${buildDir}/dsDotNet")
+    includeEmptyDirs = false
+    eachFile {
+        it.path = it.path.substring(it.path.indexOf("/") + 1)
+    }
+}
+
+
+task compileRelease(type: Exec, dependsOn: unzipDataSource) {
+    workingDir "."
+    commandLine "${msbuild_exe}", "${projectDir}/Project/${project.ext.releasecsproj}"
+}
+
+clean {
+    delete += "${projectDir}/Project/obj"
+    delete += "${projectDir}/Project/bin"
+}
+
+
+task createKit(type: Zip, dependsOn: [compileRelease]) {
+    archiveName = adapterName + "-" + version + ".zip"
+    def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
+
+    into("${topDirName}") {
+        from "${project.projectDir}/blade"
+        include 'blade_config/bootstrap.conf'
+        filter(ReplaceTokens, tokens: replacements)
+    }
+
+    into("${topDirName}") {
+        from "${project.projectDir}/blade"
+        exclude 'blade_config/bootstrap.conf'
+        exclude 'DataSource/etc/adapterName'
+    }
+
+    into("${topDirName}") {
+        from "${project.projectDir}/blade"
+        include 'DataSource/etc/adapterName'
+        fileMode 0755
+    }
+
+    if (!project.hasProperty("configOnly")) {
+        into("${topDirName}/DataSource/bin") {
+            from("${buildDir}/dsDotNet")
+            include "*.dll"
+            fileMode 0755
+        }
+
+        into("${topDirName}/DataSource/bin") {
+            from("${projectDir}/Project/bin/Release")
+	    include "TemplatePricingAdapter.exe"
+            fileMode 0755
+        }
+    } else {
+         into("${topDirName}/DataSource") {
+	    from("${projectDir}/Project")
+            include ("bin")
+            includeEmptyDirs = true
+        }
+    }
+}
+
+task setupWorkingDirectory(type: Copy) {
+    from("${project.projectDir}/blade") {
+        include 'blade_config/bootstrap.conf'
+        filter(ReplaceTokens, tokens: replacements)
+    }
+    from("${project.projectDir}/blade") {
+        exclude 'blade_config/bootstrap.conf'
+        exclude 'DataSource/bin'
+        exclude 'Liberator'
+        exclude 'Transformer'
+    }
+    into("${buildDir}/env")
+}
+
+task createEnvironmentConfig () {
+    String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
+    String content = """
+                     define THIS_LEG                            ${thisLeg}
+                     define LIBERATOR${thisLeg}_HOST            ${(project.hasProperty("liberatorHost") ? project.liberatorHost : "localhost")}
+                     define LIBERATOR${thisLeg}_DATASRCPORT     ${(project.hasProperty("liberatorDsPort") ? project.liberatorDsPort : "15001")}
+                     define TRANSFORMER${thisLeg}_HOST          ${(project.hasProperty("transformerHost") ? project.transformerHost : "localhost")}
+                     define TRANSFORMER${thisLeg}_DATASRCPORT   ${(project.hasProperty("transformerDsPort") ? project.transformerDsPort : "15002")}
+
+                     add-field  CONTRIB_USER    20000
+                     """.stripIndent()
+
+    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/").mkdirs()
+    new File("${setupWorkingDirectory.getDestinationDir().getAbsolutePath()}/blade_config/environment-ide.conf").text=content
+}
+
+setupWorkingDirectory.finalizedBy createEnvironmentConfig
+assemble.dependsOn(createKit)
