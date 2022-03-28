@@ -27,9 +27,9 @@ repositories {
 }
 
 dependencies {
-    //compile fileTree(dir: 'lib', include: '*.jar')
+//    implementation fileTree(dir: 'lib', include: '*.jar')
 
-    compile(group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+')
+    implementation(group: 'com.caplin.platform.components', name: 'JTM', version: '7.0.+')
 }
 
 jar {
@@ -47,7 +47,7 @@ task createKit(type: Zip, dependsOn: [jar, javadoc]) {
     }
 
     into("${topDirName}/Transformer/lib/java") {
-        from([project.jar.outputs, configurations.compile])
+        from([project.jar.outputs, configurations.compileClasspath])
     }
 }
 
