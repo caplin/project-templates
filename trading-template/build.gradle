@@ -17,21 +17,21 @@ ext {
 version = major + "." + minor + "." + patch
 
 repositories {
-//    mavenCentral()
-//    maven {
-//        credentials {
-//            username "$caplinNexusUser"
-//            password "$caplinNexusSecret"
-//        }
-//        url "https://repository.caplin.com"
-//    }
+    mavenCentral()
+    maven {
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "https://repository.caplin.com"
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'lib', include: '*.jar')
+//    implementation fileTree(dir: 'lib', include: '*.jar')
 
-//    implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
-//    implementation(group: 'com.caplin.platform.integration.java', name: 'trading-datasource', version: '7.0.+')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'trading-datasource', version: '7.0.+')
 }
 
 jar {
