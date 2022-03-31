@@ -28,7 +28,7 @@ if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   start_command="java -cp "$classpath" -jar "$GC_OPTIONS" "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &"
-   eval $start_command
+   start_command="java -cp "$classpath" -jar "$CAPLIN_BLADE_JAVA_OPTIONS" "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &"
+   $start_command
    echo $!
 fi
