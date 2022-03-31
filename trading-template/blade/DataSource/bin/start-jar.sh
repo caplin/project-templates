@@ -28,6 +28,7 @@ if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   java -cp "$classpath" -jar "$jar" --trading-property-file=etc/trading-provider.properties "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
+   start_command="java -cp "$classpath" -jar "$GC_OPTIONS" "$jar" --trading-property-file=etc/trading-provider.properties "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &"
+   eval $start_command
    echo $!
 fi
