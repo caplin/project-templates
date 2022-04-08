@@ -66,7 +66,7 @@ task createKit(type: Zip, dependsOn: jar) {
 
     if (!project.hasProperty("configOnly")) {
         into("${topDirName}/DataSource/lib") {
-            from([project.jar.outputs, configurations.compileClasspath])
+            from([project.jar.outputs, configurations.runtimeClasspath])
         }
     }
 }
