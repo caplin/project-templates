@@ -51,16 +51,12 @@ task createKit(type: Zip, dependsOn: jar) {
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         include 'blade_config/bootstrap.conf'
-        if (!project.hasProperty("configOnly")) {
-            include 'DataSource/bin/start-jar.sh'
-        }
         filter(ReplaceTokens, tokens: replacements)
     }
 
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         exclude 'blade_config/bootstrap.conf'
-        exclude 'DataSource/bin/start-jar.sh'
     }
 
     if (!project.hasProperty("configOnly")) {
@@ -69,6 +65,15 @@ task createKit(type: Zip, dependsOn: jar) {
         }
     }
 
+    if (!project.hasProperty("configOnly")) {
+        into("${topDirName}/DataSource/bin") {
+            from("${project.projectDir}/../start-jar.sh")
+        }
+    }
+
+    into("${topDirName}/overrides/${project.name}/DataSource/bin") {
+        from("${project.projectDir}/../java-env.sh")
+    }
 }
 
 task setupWorkingDirectory(type: Copy) {
@@ -79,7 +84,6 @@ task setupWorkingDirectory(type: Copy) {
     }
     from("${project.projectDir}/blade") {
         exclude 'blade_config/bootstrap.conf'
-        exclude 'DataSource/bin'
         exclude 'Liberator'
     }
     into("${buildDir}/env")
