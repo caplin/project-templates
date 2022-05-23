@@ -179,7 +179,7 @@ To provide your adapter with a working directory and the configuration of the Li
 
 To pass options to the Java virtual machine (JVM) that runs your adapter in your IDE, add the JVM options to the adapter's run configuration.
 
-To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, export environment variable **CAPLIN_BLADE_JAVA_OPTIONS**. ( Notice: You can set any of the JVM options within this variable, but it will affect all blades that start with this environment variable. To start new java blade without the same JVM options, you need to change the environment variable and then start.)
+To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, export environment variable **CAPLIN_BLADE_JAVA_OPTIONS**. ( Notice: You can set any of the JVM options within this variable, but it will affect all product that start with this environment variable. To start new java product without the same JVM options, you need to change the environment variable and then start.)
 
 For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
 
