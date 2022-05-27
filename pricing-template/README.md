@@ -55,11 +55,11 @@ Follow the instructions below to create a new adapter project based on the Prici
         }*/
         ```
         
-    1.  In this project's `build.gradle` file, uncomment the `compile fileTree(...)` line in the `dependencies` block:
+    1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
         dependencies {
-            compile fileTree(dir: 'lib', include: '*.jar')
+            implementation fileTree(dir: 'lib', include: '*.jar')
 
             ...
         }
