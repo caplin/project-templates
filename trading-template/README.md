@@ -15,16 +15,23 @@ Follow the instructions below to create a new adapter project based on the Tradi
 
 1.  Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
-    *   `wget http://github.com/caplin/project-templates/archive/master.zip`
+    *   **Clone**:
 
-        `unzip -qoa master.zip`
+        ```
+        $ git clone https://github.com/caplin/project-templates.git
+        ```
+    
+    *   **Download**:
 
-    *   `git clone https://github.com/caplin/project-templates.git`
+        ```
+        $ wget http://github.com/caplin/project-templates/archive/master.zip
+        $ unzip -qoa master.zip
+        ```
 
 1.  Copy the template directory `trading-template` and rename it to the name of your new project (for example, MyTradingAdapter):
 
-    ```bash
-    cp -r ./trading-template ~/src/MyTradingAdapter
+    ```
+    $ cp -r ./trading-template ~/src/MyTradingAdapter
     ```
 
 1.  Edit the file `~/src/MyTradingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyTradingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
@@ -61,16 +68,15 @@ Follow the instructions below to create a new adapter project based on the Tradi
         ```groovy
         dependencies {
             implementation fileTree(dir: 'lib', include: '*.jar')
-
             ...
         }
         ```
 
     1.  Copy the following Caplin libraries to this project's `lib` directory:
 
-        *   Java DataSource API 7+: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        *   Java DataSource API 7.1.x: <code>datasource-<em>version</em>-jar-with-dependencies.jar</code>
 
-        *   Java Trading API 7+: <code>trading-datasource-<em>version</em>.jar</code>
+        *   Java Trading API 7.1.x: <code>trading-datasource-<em>version</em>.jar</code>
 
 
 ### Import your new project into an IDE

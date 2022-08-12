@@ -15,16 +15,23 @@ Follow the instructions below to create a new adapter project based on the Permi
 
 1.  Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
-    *   `wget http://github.com/caplin/project-templates/archive/master.zip`
+    *   **Clone**:
 
-        `unzip -qoa master.zip`
+        ```
+        $ git clone https://github.com/caplin/project-templates.git
+        ```
+    
+    *   **Download**:
 
-    *   `git clone https://github.com/caplin/project-templates.git`
+        ```
+        $ wget http://github.com/caplin/project-templates/archive/master.zip
+        $ unzip -qoa master.zip
+        ```
 
 1.  Copy the template directory `permissioning-template` and rename it to the name of your new project (for example, MyPermissioningAdapter):
 
-    ```bash
-    cp -r ./permissioning-template ~/src/MyPermissioningAdapter
+    ```
+    $ cp -r ./permissioning-template ~/src/MyPermissioningAdapter
     ```
 
 1.  Edit the file `~/src/MyPermissioningAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPermissioningAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
@@ -57,16 +64,15 @@ Follow the instructions below to create a new adapter project based on the Permi
         ```groovy
         dependencies {
             implementation fileTree(dir: 'lib', include: '*.jar')
-
             ...
         }
         ```
 
     1.  Copy the following Caplin libraries to this project's `lib` directory:
 
-        *   Java DataSource API 7+: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        *   Java DataSource API 7.1.x: <code>datasource-<em>version</em>-jar-with-dependencies.jar</code>
 
-        *   Java Permissioning API 7+: <code>permissioning-datasource-<em>version</em>.jar</code>
+        *   Java Permissioning API 7.0.x: <code>permissioning-datasource-<em>version</em>.jar</code>
 
 
 ### Import your new project into an IDE

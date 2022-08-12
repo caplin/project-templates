@@ -10,16 +10,23 @@ Follow the instructions below to create a new adapter project based on the Prici
 
 1.  Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
-    *   `wget http://github.com/caplin/project-templates/archive/master.zip`
+    *   **Clone**:
 
-        `unzip -qoa master.zip`
+        ```
+        $ git clone https://github.com/caplin/project-templates.git
+        ```
+    
+    *   **Download**:
 
-    *   `git clone https://github.com/caplin/project-templates.git`
+        ```
+        $ wget http://github.com/caplin/project-templates/archive/master.zip
+        $ unzip -qoa master.zip
+        ```
 
 1.  Copy the template directory `pricing-template` and you may rename it to the name of your new project (for example, MyPricingAdapter):
 
-    ```bash
-    cp -r ./pricing-template-dotnet ~/src/MyPricingAdapter
+    ```
+    $ cp -r ./pricing-template-dotnet ~/src/MyPricingAdapter
     ```
 
 1.  Edit the file `~/src/MyPricingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPricingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
@@ -55,17 +62,17 @@ Follow the instructions below to create a new adapter project based on the Prici
 
         ```groovy
         repositories {
-    		mavenCentral()
-    		maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
-	}```
-
+            mavenCentral()
+            maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
+        }
+        ```
 
 
 ### Import your new project into Visual Studio
 
 To import your project into Visual Studio, follow the steps below:
 
-1.  In VS, click **File > Open > Project/Solution**. The File Manager should appear.
+1.  In Visual Studio, click **File > Open > Project/Solution**. The File Manager should appear.
 
 1.  Navigate to the DotNet Template in your project templates, Go into **Project**.
 
@@ -75,21 +82,23 @@ To import your project into Visual Studio, follow the steps below:
 
 ### Reference the DataSource.NET In your solution
 
-You will need to link your DSDK dll to use the IDE to build/run your adapter without gradle, to do this follow the steps below:
+You will need to link your DSDK dll to use the IDE to build/run your adapter without Gradle.
 
-1. Download the latest Download the latest .NET DataSource API from the Caplin Website: https://www.caplin.com/developer/downloads
+Follow the steps below:
 
-1. Create a directory in your **Project** folder for the DSDK E.G. Project/Lib/
+1.  Download the latest .NET DataSource API from the Caplin Website: https://www.caplin.com/developer/downloads
 
-1. Extract your DataSource.NET to your new directory
+1.  Create a directory in your **Project** folder for the DSDK. For example, `Project/Lib/`
 
-1. Copy all files from the kit with a ".dll" extension to the bin/Debug or bin/Release directory (Depending on the Configuration you are working on)
+1.  Extract your DataSource.NET to your new directory
 
-1. From within Visual Studio, in the Solution Explorer right click the **References** icon, and select **Add Reference...**
+1.  Copy all files from the kit with a ".dll" extension to the `bin/Debug` or `bin/Release` directory (depending on the Configuration you are working on)
 
-1. Click the **Browse** option and navigate to your new lib directory where you have extracted the DataSource.NET kit
+1.  In Visual Studio's Solution Explorer, right-click the **References** icon, and select **Add Reference**
 
-1. Include the DataSource.NET.dll and Click **Ok**
+1.  Click the **Browse** option and navigate to your new `lib` directory where you have extracted the DataSource.NET kit
+
+1.  Include the DataSource.NET.dll and Click **Ok**
 
 ## Building and deploying the adapter blade
 
@@ -118,7 +127,7 @@ To provide Liberator or Transformer with your adapter's configuration, follow th
 
 To provide your adapter with a working directory and the configuration of the Liberator or Transformer it connects to, follow the steps below:
 
-1.  In your Solution Explorer, right click your soluton, **Properties > Debug** :
+1.  In your Solution Explorer, right click your solution, **Properties > Debug** :
 
     1.  Set the run configuration's working directory to <code><em>dfw_location</em>/active_blades/<em>adapter_name</em>/DataSource</code>, where <code><em>dfw_location</em></code> is the path to your local DFW, and <code><em>adapter_name</em></code> is the name of your adapter.
 
