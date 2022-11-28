@@ -24,7 +24,7 @@ Each template is a [Gradle](https://gradle.org/) project that comprises:
 
 Caplin Project Templates have the following requirements:
 
-* Oracle Java 8 64-bit
+* OpenJDK 8 or 11
 * An IDE or development environment with Gradle support
 * Caplin software libraries
 
