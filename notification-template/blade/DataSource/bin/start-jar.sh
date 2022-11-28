@@ -29,11 +29,11 @@ if [ $confreading = 1 ]; then
    exit $?
 else
    if [[ ! -z $START_FOREGROUND_NOLOGS ]]; then
-       java -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java$BLADENAME.log 2>&1
+       java -cp "$classpath" $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" > "$LOGDIR"/java$BLADENAME.log 2>&1
    elif [[ ! -z $START_FOREGROUND ]]; then
-       java -cp "$classpath" -jar "$jar" "$@" --foreground-logs=true
+       java -cp "$classpath" $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" --foreground-logs=true
    else
-       java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
+       java -cp "$classpath" $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
    fi
    echo $!
 fi

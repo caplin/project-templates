@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: "base"
-apply plugin: "maven"
+apply plugin: "maven-publish"
 
 ext {
     major = 0
@@ -39,7 +39,10 @@ repositories {
         }
         url "https://repository.caplin.com"
     }*/
-    maven { url "http://artifactory.caplin.com:8081/artifactory/caplin-qa" }
+    maven {
+        url "http://artifactory.caplin.com:8081/artifactory/caplin-qa"
+        allowInsecureProtocol = true
+    }
 
 }
 

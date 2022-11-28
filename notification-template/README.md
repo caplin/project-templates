@@ -15,16 +15,23 @@ Follow the instructions below to create a new adapter project based on the Notif
 
 1.  Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
-    *   `wget http://github.com/caplin/project-templates/archive/master.zip`
+    *   **Clone**:
 
-        `unzip -qoa master.zip`
+        ```
+        $ git clone https://github.com/caplin/project-templates.git
+        ```
+    
+    *   **Download**:
 
-    *   `git clone https://github.com/caplin/project-templates.git`
+        ```
+        $ wget http://github.com/caplin/project-templates/archive/master.zip
+        $ unzip -qoa master.zip
+        ```
 
 1.  Copy the template directory `notification-template` and rename it to the name of your new project (for example, MyNotificationAdapter):
 
-    ```bash
-    cp -r ./notification-template ~/src/MyNotificationAdapter
+    ```
+    $ cp -r ./notification-template ~/src/MyNotificationAdapter
     ```
 
 1.  Edit the file `~/src/MyNotificationAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyNotificationAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/component/deployment-framework/features-and-concepts/cdf-blade-types#Adapter-blade), the project name will be used as the name for the blade.
@@ -52,21 +59,20 @@ Follow the instructions below to create a new adapter project based on the Notif
         }*/
         ```
         
-    1.  In this project's `build.gradle` file, uncomment the `compile fileTree(...)` line in the `dependencies` block:
+    1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
         dependencies {
-            compile fileTree(dir: 'lib', include: '*.jar')
-
+            implementation fileTree(dir: 'lib', include: '*.jar')
             ...
         }
         ```
 
     1.  Copy the following Caplin libraries to this project's `lib` directory:
 
-        *   Java DataSource API 7+: <code>datasource-java-<em>version</em>-jar-with-dependencies.jar</code>
+        *   Java DataSource API 7.1.x: <code>datasource-<em>version</em>-jar-with-dependencies.jar</code>
 
-        *   Java Notification API 7+: <code>NotificationJava-<em>version</em>.jar</code>
+        *   Java Notification API 7.1.x: <code>NotificationJava-<em>version</em>.jar</code>
 
 
 ### Import your new project into an IDE
@@ -179,31 +185,13 @@ To provide your adapter with a working directory and the configuration of the Li
 
 To pass options to the Java virtual machine (JVM) that runs your adapter in your IDE, add the JVM options to the adapter's run configuration.
 
-To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
+To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, export environment variable **CAPLIN_BLADE_JAVA_OPTIONS**. For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
 
 ```bash
-if [ $confreading = 1 ]; then
-   java -jar "$jar" "$@"
-   exit $?
-else
-   if [[ ! -z $START_FOREGROUND_NOLOGS ]]; then
-       java -cp "$classpath" -jar "$jar" "$@" > "$LOGDIR"/java$BLADENAME.log 2>&1
-   elif [[ ! -z $START_FOREGROUND ]]; then
-       java -cp "$classpath" -jar "$jar" "$@" --foreground-logs=true
-   else
-       java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
-   fi
-   echo $!
-fi
+export CAPLIN_BLADE_JAVA_OPTIONS="-Xms128m -Xmx256m"
 ```
 
-For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
-
-```bash
-java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
-```
-
-**Note**: The JVM heap sizes in this example are illustrative only. Profile your adapter to determine the optimal values for your use cases.
+The JVM heap sizes in this example are illustrative only. Profile your adapter to determine the optimal values for your use cases.
 
 ## Building and deploying the adapter blade
 

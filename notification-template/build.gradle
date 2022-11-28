@@ -28,17 +28,17 @@ repositories {
 }
 
 dependencies {
-    //compile fileTree(dir: 'lib', include: '*.jar')
+    //implementation fileTree(dir: 'lib', include: '*.jar')
 
-    compile(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.0.+')
-    compile(group: 'com.caplin.platform.integration.java', name: 'notification', version: '7.0.+')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'notification', version: '7.1.+')
 }
 
 jar {
     manifest {
         attributes(
                 'Main-Class': 'com.caplin.template.NotificationTemplate',
-                "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
+                "Class-Path": configurations.runtimeClasspath.collect { it.getName() }.join(' ')
         )
     }
 }
@@ -65,7 +65,7 @@ task createKit(type: Zip, dependsOn: jar) {
 
     if (!project.hasProperty("configOnly")) {
         into("${topDirName}/DataSource/lib") {
-            from([project.jar.outputs, configurations.compile])
+            from([project.jar.outputs, configurations.runtimeClasspath])
         }
     }
 
@@ -85,7 +85,7 @@ task setupWorkingDirectory(type: Copy) {
     into("${buildDir}/env")
 }
 
-task createEnvironmentConfig << {
+task createEnvironmentConfig  {
     String thisLeg = (project.hasProperty("thisLeg") ? project.thisLeg : "1")
 
     String content = """
