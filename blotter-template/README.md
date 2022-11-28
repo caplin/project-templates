@@ -184,22 +184,13 @@ To provide your adapter with a working directory and the configuration of the Li
 
 To pass options to the Java virtual machine (JVM) that runs your adapter in your IDE, add the JVM options to the adapter's run configuration.
 
-To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, edit the file `blade/DataSource/bin/start-jar.sh`. Add the JVM options to the `java` command in the `else` block of the conditional below:
+To pass options to the Java virtual machine (JVM) that the Deployment Framework uses to run your adapter, export environment variable **CAPLIN_BLADE_JAVA_OPTIONS**. ( Notice: You can set any of the JVM options within this variable, but it will affect all product that start with this environment variable. To start new java product without the same JVM options, you need to change the environment variable and then start.)
 
-```bash
-if [ $confreading = 1 ]; then
-   java -jar "$jar" "$@"
-   exit $?
-else
-   java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
-   echo $!
-fi
-```
 
 For example, to specify that the JVM has an initial heap size of 128MB and a maximum heap size of 256MB, add `-Xms128m -Xmx256m` as options to the `java` command, as shown below:
 
 ```bash
-java -Xms128m -Xmx256m -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log > /dev/null &
+export CAPLIN_BLADE_JAVA_OPTIONS="-Xms128m -Xmx256m"
 ```
 
 **Note**: The JVM heap sizes in this example are illustrative only. Profile your adapter to determine the optimal values for your use cases.

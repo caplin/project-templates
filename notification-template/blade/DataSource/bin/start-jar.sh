@@ -28,6 +28,6 @@ if [ $confreading = 1 ]; then
    java -jar "$jar" "$@"
    exit $?
 else
-   java -cp "$classpath" -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
+   java -cp "$classpath" -jar $CAPLIN_BLADE_JAVA_OPTIONS "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
    echo $!
 fi
