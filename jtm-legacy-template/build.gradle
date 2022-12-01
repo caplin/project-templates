@@ -33,12 +33,12 @@ dependencies {
 }
 
 jar {
-    version = null
+    archiveVersion = null
 }
 
 task createKit(type: Zip, dependsOn: [jar, javadoc]) {
-    archiveName = moduleName + "-" + version + ".zip"
-    def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
+    archiveFileName = moduleName + "-" + archiveVersion.get() + ".zip"
+    def topDirName = archiveFileName.get().substring(0, archiveFileName.get().lastIndexOf("."))
 
     into("${topDirName}") {
         from "${project.projectDir}/blade"
