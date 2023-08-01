@@ -73,8 +73,8 @@ clean {
 
 
 task createKit(type: Zip, dependsOn: [compileRelease]) {
-    archiveName = adapterName + "-" + version + ".zip"
-    def topDirName = archiveName.substring(0, archiveName.lastIndexOf("."))
+    archiveFileName = adapterName + "-" + archiveVersion.get() + ".zip"
+    def topDirName = archiveFileName.get().substring(0, archiveFileName.get().lastIndexOf("."))
 
     into("${topDirName}") {
         from "${project.projectDir}/blade"
