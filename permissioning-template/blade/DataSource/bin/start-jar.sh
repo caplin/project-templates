@@ -19,6 +19,12 @@ if [ "$1" = "CONFREADER" ]; then
 else
    jar=$(ls "${BINARY_ROOT}"/lib/${BLADENAME}*.jar|head -1)
    echo "Jar: ${jar}"
-   java $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
+   if [[ -n $START_FOREGROUND_NOLOGS ]]; then
+      java $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1
+   elif [[ -n $START_FOREGROUND ]]; then
+      java $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" --foreground-logs=true
+   else
+      java $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
+   fi
    echo $!
 fi
