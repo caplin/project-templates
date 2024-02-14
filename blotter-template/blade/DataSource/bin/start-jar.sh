@@ -14,26 +14,18 @@ BLADENAME=@adapterName@
 
 if [ "$1" = "CONFREADER" ]; then
    shift
-   confreading=1
-   jar=`ls "$BINARY_ROOT"/lib/datasource*.jar|head -1`
-else
-   confreading=0
-   jar=`ls "$BINARY_ROOT"/lib/$BLADENAME*.jar|head -1`
-   classpath="${BINARY_ROOT}/lib/*"
-
-   echo "Classpath: $jar"
-fi
-
-if [ $confreading = 1 ]; then
-   java -jar "$jar" "$@"
+   java -cp "${BINARY_ROOT}/lib/*" com.caplin.datasource.DataSource "$@"
    exit $?
 else
-   if [[ ! -z $START_FOREGROUND_NOLOGS ]]; then
-       java -cp "$classpath" $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" > "$LOGDIR"/java$BLADENAME.log 2>&1
-   elif [[ ! -z $START_FOREGROUND ]]; then
-       java -cp "$classpath" $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" --foreground-logs=true
+   jar=$(ls "${BINARY_ROOT}"/lib/${BLADENAME}*.jar|head -1)
+   echo "Jar: ${jar}"
+   if [[ -n $START_FOREGROUND_NOLOGS ]]; then
+      java $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" > "$LOGDIR"/java-$BLADENAME.log 2>&1
+   elif [[ -n $START_FOREGROUND ]]; then
+      java $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" --foreground-logs=true
    else
-       java -cp "$classpath" $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
+      java $CAPLIN_BLADE_JAVA_OPTIONS -jar "$jar" "$@" 2> "$LOGDIR"/java-$BLADENAME.log >/dev/null &
    fi
    echo $!
 fi
+
