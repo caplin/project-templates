@@ -2,7 +2,6 @@
 
 The Caplin Project Templates are a set of template projects to help you integrate your backend systems with the [Caplin Platform](https://www.caplin.com/developer/component/platform-architecture).
 
-
 This repository includes the following templates:
 
 | Template                                 | Directory                                                                                   |
