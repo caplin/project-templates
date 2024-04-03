@@ -4,16 +4,16 @@ The Caplin Project Templates are a set of template projects to help you integrat
 
 This repository includes the following templates:
 
-| Template                                 | Directory                                                                                   |
-|------------------------------------------|---------------------------------------------------------------------------------------------|
-| Pricing Adapter Template                 | [./pricing-template](./pricing-template#caplin-pricing-adapter-template)                    |
-| Pricing Adapter Template .NET            | [./pricing-template-dotnet](./pricing-template-dotnet#caplin-pricing-adapter-template-dotnet)             |
-| Trading Adapter Template                 | [./trading-template](./trading-template#caplin-trading-adapter-template)                    |
-| Permissioning Adapter Template           | [./permissioning-template](./permissioning-template#caplin-permissioning-adapter-template)  |
-| Notification Adapter Template            | [./notification-template](./notification-template#caplin-notification-adapter-template)     |
-| Blotter Adapter Template                 | [./blotter-template](./blotter-template#caplin-blotter-adapter-template)                    |
-| Java Transformer Module (Transformer 6)  | [./jtm-legacy-template](./jtm-legacy-template#caplin-legacy-jtm-template)                   |
-| Java Transformer Module (Transformer 7)  | [./jtm-template](./jtm-template#caplin-jtm-template)                                        |
+| Template                                | Directory                                                                                   |
+|-----------------------------------------|---------------------------------------------------------------------------------------------|
+| Pricing Adapter Template                | [./pricing-template](./pricing-template#caplin-pricing-adapter-template)                    |
+| Pricing Adapter Template .NET           | [./pricing-template-dotnet](./pricing-template-dotnet#caplin-pricing-adapter-template-dotnet)             |
+| Trading Adapter Template                | [./trading-template](./trading-template#caplin-trading-adapter-template)                    |
+| Permissioning Adapter Template          | [./permissioning-template](./permissioning-template#caplin-permissioning-adapter-template)  |
+| Notification Adapter Template           | [./notification-template](./notification-template#caplin-notification-adapter-template)     |
+| Blotter Adapter Template                | [./blotter-template](./blotter-template#caplin-blotter-adapter-template)                    |
+| Java Transformer Module (Transformer 6) | [./jtm-legacy-template](./jtm-legacy-template#caplin-legacy-jtm-template)                   |
+| Java Transformer Module (Transformer 8) | [./jtm-template](./jtm-template#caplin-jtm-template)                                        |
 
 Each template is a [Gradle](https://gradle.org/) project that comprises:
 
@@ -24,7 +24,7 @@ Each template is a [Gradle](https://gradle.org/) project that comprises:
 
 Caplin Project Templates have the following requirements:
 
-* OpenJDK 8 or 11
+* OpenJDK 17
 * An IDE or development environment with Gradle support
 * Caplin software libraries
 

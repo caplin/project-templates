@@ -1,6 +1,6 @@
 # Caplin JTM Template
 
-This project template provides a starting point for writing a Transformer 7 module using the Java Transformer Module (JTM) API [com.caplin.jtm](http://www.caplin.com/developer/api/transformer_java_sdk_2/latest).
+This project template provides a starting point for writing a Transformer 8 module using the Java Transformer Module (JTM) API [com.caplin.jtm](http://www.caplin.com/developer/api/transformer_java_sdk_2/latest).
 
 > To create a Transformer 6 module, use the [Caplin Legacy JTM Template](https://github.com/caplin/project-templates/tree/master/jtm-legacy-template).
 
@@ -15,7 +15,7 @@ Follow the instructions below to create a new Transformer module project based o
 
 ### Copy and customise the template
 
-1.  Clone, or download and extract the latest version of the Caplin Project Templates repository:
+1. Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
     *   **Clone**:
 
@@ -30,15 +30,15 @@ Follow the instructions below to create a new Transformer module project based o
         $ unzip -qoa master.zip
         ```
 
-1.  Copy the template directory `jtm-template` and rename it to the name of your new project (for example, MyTransformerModule):
+2. Copy the template directory `jtm-template` and rename it to the name of your new project (for example, MyTransformerModule):
 
     ```
     $ cp -r ./jtm-template ~/src/MyTransformerModule
     ```
 
-1.  Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
+3. Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
 
-1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
+4. If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
     1.  In your `~/.gradle/gradle.properties` file (create it if it does not exist), add the following lines, replacing `<username>` and `<password>` with your Caplin credentials:
 
@@ -47,9 +47,9 @@ Follow the instructions below to create a new Transformer module project based o
         caplinNexusSecret=<password>
         ```
 
-1.  If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually:
+5. If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually:
 
-    1.  In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
+    1. In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
 
         ```groovy
         /*maven {
@@ -61,7 +61,7 @@ Follow the instructions below to create a new Transformer module project based o
         }*/
         ```
         
-    1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
+    2. In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
         dependencies {
@@ -70,9 +70,9 @@ Follow the instructions below to create a new Transformer module project based o
         }
         ```
 
-    1.  Copy the following Caplin libraries to this project's `lib` directory:
+    3. Copy the following Caplin libraries to this project's `lib` directory:
 
-        *   Transformer 7.1.x: <code>JTM-<em>version</em>.jar</code> (found in the `lib/java` directory inside the Transformer installation kit)
+        *   Transformer 8.0.x: <code>JTM-<em>version</em>.jar</code> (found in the `lib/java` directory inside the Transformer installation kit)
 
 
 ### Import your new project into an IDE

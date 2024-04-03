@@ -30,8 +30,7 @@ repositories {
 dependencies {
     //implementation fileTree(dir: 'lib', include: '*.jar')
 
-    implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
-    implementation(group: 'com.caplin.platform.integration.java', name: 'notification', version: '7.1.+')
+    implementation(group: 'com.caplin.platform.integration.java', name: 'notification', version: '8.0.+')
 }
 
 jar {

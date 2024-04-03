@@ -12,7 +12,7 @@ Follow the instructions below to create a new adapter project based on the Prici
 
 ### Copy and customise the template
 
-1.  Clone, or download and extract the latest version of the Caplin Project Templates repository:
+1. Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
     *   **Clone**:
 
@@ -27,19 +27,19 @@ Follow the instructions below to create a new adapter project based on the Prici
         $ unzip -qoa master.zip
         ```
 
-1.  Copy the template directory `pricing-template` and rename it to the name of your new project (for example, MyPricingAdapter):
+2. Copy the template directory `pricing-template` and rename it to the name of your new project (for example, MyPricingAdapter):
 
     ```
     $ cp -r ./pricing-template ~/src/MyPricingAdapter
     ```
 
-1.  Edit the file `~/src/MyPricingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPricingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
+3. Edit the file `~/src/MyPricingAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyPricingAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
 
-1.  Edit the file `~/src/MyPricingAdapter/blade/blade_config/bootstrap.conf`. Set the value of the configuration variable `ROUTE_VIA_TRANSFORMER` to `TRUE` (default) to configure Liberator to route requests to the adapter via Transformer or `FALSE` to configure Liberator to route requests directly to the adapter.
+4. Edit the file `~/src/MyPricingAdapter/blade/blade_config/bootstrap.conf`. Set the value of the configuration variable `ROUTE_VIA_TRANSFORMER` to `TRUE` (default) to configure Liberator to route requests to the adapter via Transformer or `FALSE` to configure Liberator to route requests directly to the adapter.
 
-    **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
+    **Note**: to route trade messages to the adapter via Transformer requires Transformer version 8.0.1 or later.
     
-1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
+5. If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
     1.  In your `~/.gradle/gradle.properties` file (create it if it does not exist), add the following lines, replacing `<username>` and `<password>` with your Caplin credentials:
 
@@ -47,10 +47,33 @@ Follow the instructions below to create a new adapter project based on the Prici
         caplinNexusUser=<username>
         caplinNexusSecret=<password>
         ```
+6. If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually from the shipped zip file:
 
-1.  If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually:
+    1. Extract the contents of <code>datasource-<em>version</em>.zip</code> into a destination folder of your choice.
 
-    1.  In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
+    2. In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
+
+        ```groovy
+        /*maven {
+            credentials {
+                username "$caplinNexusUser"
+                password "$caplinNexusSecret"
+            }
+            url "https://repository.caplin.com"
+        }*/
+        ```
+
+        and add the following block instead, but remember to replace the `<path-to-directory>` with the path to the directory you extracted in the previous step:
+        ```groovy
+        maven {
+           url = uri("file://<path-to-directory>")
+        }
+        ```
+
+    3. Still within the `build.gradle` file, locate the `implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '8.0.+')` line under the `dependencies` block. Modify the version parameter to match the exact version of the zip file you possess (for example, `8.0.1-1186-d5c663d9`).
+7. Alternatively, you can also manually insert the individual jar dependencies into the `lib` folder:
+
+    1. In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
 
         ```groovy
         /*maven {
@@ -62,7 +85,7 @@ Follow the instructions below to create a new adapter project based on the Prici
         }*/
         ```
         
-    1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
+    2. In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
         dependencies {
@@ -71,9 +94,9 @@ Follow the instructions below to create a new adapter project based on the Prici
         }
         ```
 
-    1.  Copy the following Caplin libraries to this project's `lib` directory:
+    3. Copy the following Caplin libraries to this project's `lib` directory:
 
-        *   Java DataSource API 7.1.x: <code>datasource-<em>version</em>-jar-with-dependencies.jar</code>
+        *   Java DataSource API 8.0.x: <code>datasource-<em>version</em>-jar-with-dependencies.jar</code>
 
 
 ### Import your new project into an IDE

@@ -1,4 +1,4 @@
-#Project dependencies
+# Project dependencies
 
 Add dependencies manually to this directory, or import dependencies from Caplin's repository automatically by adding your Caplin account credentials to the **repositories > maven > credentials** block in the file `build.gradle`.
  

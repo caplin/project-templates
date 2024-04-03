@@ -26,15 +26,6 @@ class TemplateTradingApplicationListener implements TradingApplicationListener {
         logger.log(Level.INFO, "Trade channel closed: " + channel.toString());
     }
 
-    @Override
-    public void blotterChannelCreated(BlotterChannel blotterChannel) {
-        //This is an outdated API and it is recommended to use the Caplin Blotter API instead
-    }
-
-    @Override
-    public void blotterChannelClosed(BlotterChannel blotterChannel) {
-        //This is an outdated API and it is recommended to use the Caplin Blotter API instead
-    }
 
     @Override
     public void peerUp(int peerIndex) {

@@ -29,7 +29,7 @@ repositories {
 dependencies {
 //    implementation fileTree(dir: 'lib', include: '*.jar')
 
-    implementation(group: 'com.caplin.platform.components', name: 'JTM', version: '7.1.+')
+    implementation(group: 'com.caplin.platform.components', name: 'JTM', version: '8.0.+')
 }
 
 jar {

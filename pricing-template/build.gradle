@@ -30,7 +30,7 @@ repositories {
 dependencies {
     //implementation fileTree(dir: 'lib', include: '*.jar')
     implementation group: 'com.github.fge', name: 'json-patch', version: '1.9'
-    implementation(group: 'com.caplin.platform.integration.java', name: 'datasource', version: '7.1.+')
+    implementation group: 'com.caplin.platform.integration.java', name: 'datasource', version: '8.0.+'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.1'
 }
 
