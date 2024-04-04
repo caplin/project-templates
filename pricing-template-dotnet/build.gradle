@@ -32,13 +32,13 @@ configurations {
 
 repositories {
     mavenCentral()
-    /*  maven {
-          credentials {
-              username "$caplinNexusUser"
-              password "$caplinNexusSecret"
-          }
-          url "https://repository.caplin.com"
-      }*/
+  /*  maven {
+        credentials {
+            username "$caplinNexusUser"
+            password "$caplinNexusSecret"
+        }
+        url "https://repository.caplin.com"
+    }*/
     maven {
         url "http://artifactory.caplin.com:8081/artifactory/caplin-qa"
         allowInsecureProtocol = true
