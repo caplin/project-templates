@@ -92,7 +92,6 @@ Follow the instructions below to create a new adapter project based on the Blott
             ...
         }
         ```
-        
     1.  Copy the following Caplin libraries to this project's `lib` directory:
 
         *   Java Blotter API 8.0.x: <code>BlotterJava-<em>version</em>.jar</code>
