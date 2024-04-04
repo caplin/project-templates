@@ -52,7 +52,7 @@ task createKit(type: Zip, dependsOn: jar) {
         include 'blade_config/bootstrap.conf'
         include 'DataSource/etc/trading-provider.properties'
         if (!project.hasProperty("configOnly")) {
-            include 'DataSource/bin/start-jar.sh'
+            include 'DataSource/bin/*'
         }
         filter(ReplaceTokens, tokens: replacements)
     }
@@ -61,7 +61,7 @@ task createKit(type: Zip, dependsOn: jar) {
         from "${project.projectDir}/blade"
         exclude 'blade_config/bootstrap.conf'
         exclude 'DataSource/etc/trading-provider.properties'
-        exclude 'DataSource/bin/start-jar.sh'
+        exclude 'DataSource/bin/*'
     }
 
     if (!project.hasProperty("configOnly")) {

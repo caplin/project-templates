@@ -3,8 +3,8 @@
 # Start the Pricing Template Java Adapter.
 #
 # $1 - Path to java executable
-# $2 - Path to datasource XML file
-# $3 - Path to fields XML file
+# $2 - Path to datasource config file
+# $3 - Path to fields config file
 # $4 - Java definitions ( optional )
 #
 # Returns the process id of the Java process.
@@ -14,6 +14,12 @@ BLADENAME=@adapterName@
 
 if [ "$1" = "CONFREADER" ]; then
    shift
+   if [[ `uname` == "Linux"  ]]; then
+       machine=`uname -m`
+       "${BINARY_ROOT}/bin/configreader-$machine" "$@" 2> /dev/null
+       exit $?
+   fi
+
    java -cp "${BINARY_ROOT}/lib/*" com.caplin.datasource.DataSource "$@"
    exit $?
 else
