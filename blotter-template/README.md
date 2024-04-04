@@ -83,7 +83,7 @@ Follow the instructions below to create a new adapter project based on the Blott
             url "https://repository.caplin.com"
         }*/
         ```
-
+        
     1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
