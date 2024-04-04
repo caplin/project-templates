@@ -15,7 +15,7 @@ Follow the instructions below to create a new Transformer module project based o
 
 ### Copy and customise the template
 
-1. Clone, or download and extract the latest version of the Caplin Project Templates repository:
+1.  Clone, or download and extract the latest version of the Caplin Project Templates repository:
 
     *   **Clone**:
 
@@ -30,15 +30,15 @@ Follow the instructions below to create a new Transformer module project based o
         $ unzip -qoa master.zip
         ```
 
-2. Copy the template directory `jtm-template` and rename it to the name of your new project (for example, MyTransformerModule):
+1.  Copy the template directory `jtm-template` and rename it to the name of your new project (for example, MyTransformerModule):
 
     ```
     $ cp -r ./jtm-template ~/src/MyTransformerModule
     ```
 
-3. Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
+1.  Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
 
-4. If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
+1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
     1.  In your `~/.gradle/gradle.properties` file (create it if it does not exist), add the following lines, replacing `<username>` and `<password>` with your Caplin credentials:
 
@@ -47,9 +47,9 @@ Follow the instructions below to create a new Transformer module project based o
         caplinNexusSecret=<password>
         ```
 
-5. If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually:
+1.  If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually:
 
-    1. In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
+    1.  In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
 
         ```groovy
         /*maven {
@@ -60,8 +60,8 @@ Follow the instructions below to create a new Transformer module project based o
             url "https://repository.caplin.com"
         }*/
         ```
-        
-    2. In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
+
+    1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
         dependencies {
@@ -70,7 +70,7 @@ Follow the instructions below to create a new Transformer module project based o
         }
         ```
 
-    3. Copy the following Caplin libraries to this project's `lib` directory:
+    1.  Copy the following Caplin libraries to this project's `lib` directory:
 
         *   Transformer 8.0.x: <code>JTM-<em>version</em>.jar</code> (found in the `lib/java` directory inside the Transformer installation kit)
 

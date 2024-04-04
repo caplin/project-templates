@@ -13,7 +13,7 @@ This repository includes the following templates:
 | Notification Adapter Template            | [./notification-template](./notification-template#caplin-notification-adapter-template)     |
 | Blotter Adapter Template                 | [./blotter-template](./blotter-template#caplin-blotter-adapter-template)                    |
 | Java Transformer Module (Transformer 6)  | [./jtm-legacy-template](./jtm-legacy-template#caplin-legacy-jtm-template)                   |
-| Java Transformer Module (Transformer 8)  | [./jtm-template](./jtm-template#caplin-jtm-template)   
+| Java Transformer Module (Transformer 8)  | [./jtm-template](./jtm-template#caplin-jtm-template)                                        |
 
 Each template is a [Gradle](https://gradle.org/) project that comprises:
 
