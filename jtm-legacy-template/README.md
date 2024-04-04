@@ -60,6 +60,7 @@ Follow the instructions below to create a new Transformer module project based o
             url "https://repository.caplin.com"
         }*/
         ```
+
     1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
