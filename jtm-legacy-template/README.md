@@ -30,13 +30,13 @@ Follow the instructions below to create a new Transformer module project based o
         $ unzip -qoa master.zip
         ```
 
-1.  Copy the template directory `jtm-legacy-template` and rename it to the name of your new project (for example, MyTransformerModule):
+1.   Copy the template directory `jtm-legacy-template` and rename it to the name of your new project (for example, MyTransformerModule):
 
     ```
     $ cp -r ./jtm-legacy-template ~/src/MyTransformerModule
     ```
 
-1.  Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
+1.   Edit the file `~/src/MyTransformerModule/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your project (MyTransformerModule). When you later export your project as an blade, the project name will be used as the name for the blade.
 
 1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
@@ -60,7 +60,6 @@ Follow the instructions below to create a new Transformer module project based o
             url "https://repository.caplin.com"
         }*/
         ```
-
     1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
