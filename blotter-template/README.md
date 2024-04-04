@@ -28,15 +28,15 @@ Follow the instructions below to create a new adapter project based on the Blott
         $ unzip -qoa master.zip
         ```
 
-2. Copy the template directory `blotter-template` and rename it to the name of your new project (for example, MyBlotterAdapter):
+1.  Copy the template directory `blotter-template` and rename it to the name of your new project (for example, MyBlotterAdapter):
 
     ```
     $ cp -r ./blotter-template ~/src/MyBlotterAdapter
     ```
 
-3. Edit the file `~/src/MyBlotterAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyBlotterAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
+1.  Edit the file `~/src/MyBlotterAdapter/settings.gradle`, and change the value of the `rootProject.name` variable to the name of your adapter project (MyBlotterAdapter). When you later export your project as an [adapter blade](http://www.caplin.com/developer/caplin-platform/deployment-framework/cdf-blade-types#adapter-blade), the project name will be used as the name for the blade.
 
-4. If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
+1.  If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
     1.  In your `~/.gradle/gradle.properties` file (create it if it does not exist), add the following lines, replacing `<username>` and `<password>` with your Caplin credentials:
 
@@ -45,11 +45,11 @@ Follow the instructions below to create a new adapter project based on the Blott
         caplinNexusSecret=<password>
         ```
 
-5. If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually from the shipped zip file:
+1.  If you _don't_ have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to manage this project's Caplin dependencies manually from the shipped zip file:
 
-    1. Extract the contents of <code>blotter-<em>version</em>.zip</code> into a destination folder of your choice.
+    1.  Extract the contents of <code>blotter-<em>version</em>.zip</code> into a destination folder of your choice.
 
-    2. In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
+    1.  In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
 
         ```groovy
         /*maven {
@@ -68,11 +68,11 @@ Follow the instructions below to create a new adapter project based on the Blott
         }
         ```
 
-    3. Still within the `build.gradle` file, locate the `implementation(group: 'com.caplin.platform.integration.java', name: 'blotter', version: '8.0.+')` line under the `dependencies` block. Modify the version parameter to match the exact version of the zip file you possess (for example, `8.0.1-1186-d5c663d9`).
+    1.  Still within the `build.gradle` file, locate the `implementation(group: 'com.caplin.platform.integration.java', name: 'blotter', version: '8.0.+')` line under the `dependencies` block. Modify the version parameter to match the exact version of the zip file you possess (for example, `8.0.1-1186-d5c663d9`).
 
-6. Alternatively, you can also manually insert the individual jar dependencies into the `lib` folder
+1.  Alternatively, you can also manually insert the individual jar dependencies into the `lib` folder
 
-    1. In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
+    1.  In this project's `build.gradle` file, comment out the `maven` block for <https://repository.caplin.com>:
 
         ```groovy
         /*maven {
@@ -83,8 +83,8 @@ Follow the instructions below to create a new adapter project based on the Blott
             url "https://repository.caplin.com"
         }*/
         ```
-        
-    2. In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
+
+    1.  In this project's `build.gradle` file, uncomment the `implementation fileTree(...)` line in the `dependencies` block:
 
         ```groovy
         dependencies {
@@ -93,9 +93,9 @@ Follow the instructions below to create a new adapter project based on the Blott
         }
         ```
 
-    3. Copy the following Caplin libraries to this project's `lib` directory:
+    1.  Copy the following Caplin libraries to this project's `lib` directory:
 
-        *   Java Blotter API 8.0.x: <code>BlotterJava-<em>version</em>.jar</code>
+    **    ***   Java Blotter API 8.0.x: <code>BlotterJava-<em>version</em>.jar</code>
 
 
 ### Import your new project into an IDE
