@@ -32,17 +32,22 @@ configurations {
 
 repositories {
     mavenCentral()
+    /*  maven {
+          credentials {
+              username "$caplinNexusUser"
+              password "$caplinNexusSecret"
+          }
+          url "https://repository.caplin.com"
+      }*/
     maven {
-        credentials {
-            username "$caplinNexusUser"
-            password "$caplinNexusSecret"
-        }
-        url "https://repository.caplin.com"
+        url "http://artifactory.caplin.com:8081/artifactory/caplin-qa"
+        allowInsecureProtocol = true
     }
+
 }
 
 dependencies {
-	datasource(group: 'com.caplin.cis.c', name: 'DataSource.NET', version: '8.0.+', classifier: 'x86_64-pc-win64', ext: 'zip')
+	datasource(group: 'com.caplin.cis.c', name: 'DataSource.NET', version: '7.1+', classifier: 'x86_64-pc-win64', ext: 'zip')
 }
 
 task unzipDataSource(type: Copy) {

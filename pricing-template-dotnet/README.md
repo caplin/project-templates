@@ -33,7 +33,7 @@ Follow the instructions below to create a new adapter project based on the Prici
 
 4. Edit the file `~/src/MyPricingAdapter/blade/blade_config/bootstrap.conf`. Set the value of the configuration variable `ROUTE_VIA_TRANSFORMER` to `TRUE` (default) to configure Liberator to route requests to the adapter via Transformer or `FALSE` to configure Liberator to route requests directly to the adapter.
 
-    **Note**: to route trade messages to the adapter via Transformer requires Transformer version 8.0.1 or later.
+    **Note**: to route trade messages to the adapter via Transformer requires Transformer version 7.0.3 or later.
 
 5. If you have a Caplin website account and Internet access to <https://repository.caplin.com>, follow the steps below to enable automatic downloading of this project's Caplin dependencies:
 
