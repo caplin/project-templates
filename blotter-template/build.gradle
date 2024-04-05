@@ -52,7 +52,7 @@ task createKit(type: Zip, dependsOn: jar) {
         from "${project.projectDir}/blade"
         include 'blade_config/bootstrap.conf'
         if (!project.hasProperty("configOnly")) {
-            include '../../generic-template/blade/DataSource/bin/*'
+            include 'DataSource/bin/start-jar.sh'
         }
         filter(ReplaceTokens, tokens: replacements)
     }
@@ -60,7 +60,7 @@ task createKit(type: Zip, dependsOn: jar) {
     into("${topDirName}") {
         from "${project.projectDir}/blade"
         exclude 'blade_config/bootstrap.conf'
-        exclude 'DataSource/bin/*'
+        exclude 'DataSource/bin/start-jar.sh'
     }
 
     if (!project.hasProperty("configOnly")) {
