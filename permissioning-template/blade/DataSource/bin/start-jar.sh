@@ -14,6 +14,14 @@ BLADENAME=@adapterName@
 
 if [ "$1" = "CONFREADER" ]; then
    shift
+
+   machine=`uname -m`
+   CONFREADER_BINARY="${CONFIG_BASE}/../tools/DataSource/bin/configreader-$machine"
+   if [[ -f $CONFREADER_BINARY ]]; then
+       "${CONFREADER_BINARY}" "$@" 2> /dev/null
+       exit $?
+   fi
+
    java -cp "${BINARY_ROOT}/lib/*" com.caplin.datasource.DataSource "$@"
    exit $?
 else
